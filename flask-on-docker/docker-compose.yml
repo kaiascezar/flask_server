@@ -14,8 +14,8 @@ services:
     depends_on:
       - db
   db:
-    images: postgres:13-alpine
-    volume:
+    image: postgres:13-alpine
+    volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=hello_flask
