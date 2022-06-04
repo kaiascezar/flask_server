@@ -23,5 +23,5 @@ services:
       - POSTGRES_DB=hello_flask_dev
 
 
-  volumes:
+volumes:
     postgres_data:
