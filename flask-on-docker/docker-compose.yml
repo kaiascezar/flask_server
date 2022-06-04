@@ -11,3 +11,17 @@ services:
       - 5000:5000
     env_file:
       - ./.env.dev
+    depends_on:
+      - db
+  db:
+    images: postgres:13-alpine
+    volume:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=hello_flask
+      - POSTGRES_PASSWORD=hello_flask
+      - POSTGRES_DB=hello_flask_dev
+
+
+  volumes:
+    postgres_data:
