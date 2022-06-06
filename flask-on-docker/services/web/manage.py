@@ -1,4 +1,4 @@
-from ssl import PasswordType
+from ssl import _PasswordType
 from flask.cli import FlaskGroup
 from project import app, db, User
 
