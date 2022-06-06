@@ -1,3 +1,4 @@
+from ssl import _PasswordType
 from flask.cli import FlaskGroup
 from project import app, db, User
 
@@ -15,6 +16,8 @@ def create_db():
 @cli.command("seed_db")
 def seed_db():
     db.session.add(User(user_id="BillyMin"))
+    db.session.add(User(password="test1234"))
+    db.session.add(User(decryptkey="asdfasdf"))
     db.session.commit()
     
 
