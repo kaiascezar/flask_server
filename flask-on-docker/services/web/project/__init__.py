@@ -16,7 +16,7 @@ class User(db.Model):
     decryptkey = db.Column(db.String(100), nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
     
-    def __init__(self, user_id, password, decryptkey, **kwargs):
+    def __init__(self, user_id, password, decryptkey):
         self.user_id = user_id
         self.password = password
         self.decryptkey = decryptkey
