@@ -16,7 +16,6 @@ def create_db():
 @cli.command("seed_db")
 def seed_db():
     db.session.add(User(user_id="BillyMin"))
-    db.session.add(User(decryptkey="asdfasdf"))
     db.session.commit()
     
 
