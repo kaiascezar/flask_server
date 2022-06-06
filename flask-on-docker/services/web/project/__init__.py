@@ -11,11 +11,13 @@ class User(db.Model):
     __tablename__ = "users"
     
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(128), unique=True, nullable=False)
+    user_id = db.Column(db.varchar(32), unique=True, nullable=False)
+    password = db.Column(db.varchar(32), nullable=False)
+    decryptkey = db.Column(db.varchar(256), nullable=False)
     active = db.Column(db.Boolean(), default=True, nullable=False)
     
-    def __init__(self, email):
-        self.email = email
+    def __init__(self, user_id):
+        self.user_id = user_id
 
 
 @app.route('/')
