@@ -80,7 +80,7 @@ def login():
             'user_id' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24) 
         }
-        token = jwt.encode(payload, app.config['SECRET', 'HS256'])
+        token = jwt.encode(payload, app.config['SECRET'], 'HS256')
         
         return jsonify({
             'access_token' : token.decode('UTF-8')
