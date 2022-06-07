@@ -3,7 +3,6 @@ import json
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
-from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 import jwt
 
@@ -20,13 +19,11 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.Unicode(256), nullable=False)
-    decryptkey = db.Column(db.String(100), nullable=False)
     
     
     def __init__(self, user_id, password, decryptkey):
         self.user_id = user_id
         self.password = password
-        self.decryptkey = decryptkey
     
 @app.route('/')
 def hello_world():
@@ -58,7 +55,7 @@ def hello_world():
 @app.route('/login', methods=['POST'])
 def login():
     credential = request.json
-    userid = credential['userid']
+    user_id = credential['user_id']
     password = credential['password']
     
     row = db.execute(text(""".
@@ -66,11 +63,11 @@ def login():
             id,
             password
         FROM users
-        WHERE userid = :userid
-    """), {'userid' : userid}).fetchone()
+        WHERE user_id = :user_id
+    """), {'user_id' : user_id}).fetchone()
     
     if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].endcode('UTF-8')):
-        user_id = row['userid']
+        user_id = row['user_id']
         payload = {
             'user_id' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24) 
