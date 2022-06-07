@@ -55,8 +55,8 @@ def hello_world():
 @app.route('/login', methods=['POST'])
 def login():
     credential = request.json
-    user_id = credential['user_id']
-    password = credential['password']
+    user_id = credential.get('user_id')
+    password = credential.get('password')
     
     row = db.execute(text(""".
         SELECT
