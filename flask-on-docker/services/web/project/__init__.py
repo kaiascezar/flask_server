@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 import json
-from flask import Flask, jsonify, request
+from flask import Flask, current_app, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 import bcrypt
@@ -11,6 +11,21 @@ import jwt
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
+
+
+def get_user_id_and_password(user_id):
+    row = current_app.database.execute(text("""
+        SELECT
+            id,
+            password
+        FROM users
+        WHERE user_id = :user_id
+    """), {'user_id' : user_id}).fetchone()
+
+    return {
+        'id' : row['id'],
+        'password' : row['password']
+    } if row else None
 
 
 class User(db.Model):
@@ -55,29 +70,21 @@ def hello_world():
 @app.route('/login', methods=['POST'])
 def login():
     credential = request.json
-    user_id = credential.get('user_id')
-    password = credential.get('password')
+    user_id = credential['user_id']
+    password = credential['password']
+    user_credential = get_user_id_password(user_id)
     
-    row = db.execute(text(""".
-        SELECT
-            id,
-            password
-        FROM users
-        WHERE user_id = :user_id
-    """), {'user_id' : user_id}).fetchone()
-    
-    if user_id == row['user_id'] and password == row['password']:
-        user_id = row['user_id']
+    if user_credential and bcrypt.checkpw(password.encode('UTF-8'), user_credential['password'].encode('UTF-8')):
+        user_id = user_credential['user_id']
         payload = {
             'user_id' : user_id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24) 
+            'exp' : datetime.utcnow() + timedelta(seconds = 60* 60 * 24)
         }
         token = jwt.encode(payload, app.config['SECRET'], 'HS256')
         
         return jsonify({
             'access_token' : token.decode('UTF-8')
         })
-        
     else:
         return '', 401
     
