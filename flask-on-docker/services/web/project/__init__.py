@@ -3,6 +3,7 @@ import json
 from flask import Flask, current_app, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
+from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 import jwt
 
@@ -24,14 +25,20 @@ class User(db.Model):
     
     def __init__(self, user_id, password):
         self.user_id = user_id
-        self.password = password
+        self.set_password(password)
+    
+    def set_password(self, password):
+        self.password = generate_password_hash(password)
+    
+    def check_password(self, password):
+        return check_password_hash(self.password, password)
     
     
 def get_user_id_and_password(user_id):
     row = current_app.database.execute(text("""
         SELECT
             id,
-            password
+            hashed_password
         FROM users
         WHERE user_id = :user_id
     """), {'user_id' : user_id}).fetchone()
@@ -75,7 +82,7 @@ def login():
     password = credential['password']
     user_credential = get_user_id_and_password(user_id)
     
-    if user_credential and bcrypt.checkpw(password.encode('UTF-8'), user_credential['password'].encode('UTF-8')):
+    if user_credential and bcrypt.checkpw(password.encode('UTF-8'), user_credential['hashed_password'].encode('UTF-8')):
         user_id = user_credential['user_id']
         payload = {
             'user_id' : user_id,
