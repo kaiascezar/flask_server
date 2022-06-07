@@ -66,7 +66,7 @@ def login():
         WHERE user_id = :user_id
     """), {'user_id' : user_id}).fetchone()
     
-    if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].encode('UTF-8')):
+    if user_id == row['user_id'] and password == row['password']:
         user_id = row['user_id']
         payload = {
             'user_id' : user_id,
