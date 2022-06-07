@@ -31,4 +31,4 @@ def login():
     if not result:
         return '해당 사용자가 존재하지 않습니다.', 400
     elif result[0] == userid and result[1] == password:
-        return jsonify("access Token")
+        return jsonify("access Token"), 200
