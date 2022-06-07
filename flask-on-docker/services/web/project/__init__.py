@@ -11,14 +11,12 @@ class User(db.Model):
     __tablename__ = "users"
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(100), unique=True, nullable=False)
+    username = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.Unicode(100), nullable=False)
-    decryptkey = db.Column(db.String(100), nullable=False)
-    
-    def __init__(self, user_id, password, decryptkey):
-        self.user_id = user_id
+      
+    def __init__(self, username, password):
+        self.username = username
         self.password = password
-        self.decryptkey = decryptkey
 
 
 @app.route('/')
