@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
@@ -44,7 +44,7 @@ def sign_up():
         bcrypt.salt('secret')
     )
     
-    net_user_id = app.database.execute(text("""
+    new_user_id = db.execute(text("""
         INSERT INTO users(
             user_id,
             hashed_password,
@@ -65,15 +65,15 @@ def login():
     user_id = credential['user_id']
     password = credential['password']
     
-    row = database.execute(text(""".
+    row = db.execute(text(""".
         SELECT
             id,
-            hashed_password
+            password
         FROM users
-        WHERE user_id = :user_id
+        WHERE user_id =: user_id
     """), {'user_id' : user_id}).fetchone()
     
-    if row and bcrypt.checkpw(password.encode('UTF-8'), row['hashed_password'].encode('UTF-8')):
+    if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].encode('UTF-8')):
         user_id = row['user_id']
         payload = {
             'user_id' : user_id,
