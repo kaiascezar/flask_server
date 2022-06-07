@@ -35,7 +35,7 @@ class User(db.Model):
     
     
 def get_user_id_and_password(user_id):
-    row = current_app.database.execute(text("""
+    row = current_app.db.execute(text("""
         SELECT
             id,
             hashed_password
