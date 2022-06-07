@@ -13,6 +13,20 @@ app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
 
+
+class User(db.Model):
+    __tablename__ = "users"
+    
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.Unicode(256), nullable=False)
+    
+    
+    def __init__(self, user_id, password):
+        self.user_id = user_id
+        self.password = password
+    
+    
 def get_user_id_and_password(user_id):
     row = current_app.database.execute(text("""
         SELECT
@@ -27,19 +41,6 @@ def get_user_id_and_password(user_id):
         'password' : row['password']
     } if row else None
 
-
-class User(db.Model):
-    __tablename__ = "users"
-    
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(100), unique=True, nullable=False)
-    password = db.Column(db.Unicode(256), nullable=False)
-    
-    
-    def __init__(self, user_id, password):
-        self.user_id = user_id
-        self.password = password
-    
 @app.route('/')
 def hello_world():
     return jsonify(hello="world")
@@ -72,7 +73,7 @@ def login():
     credential = request.json
     user_id = credential['user_id']
     password = credential['password']
-    user_credential = get_user_id_password(user_id)
+    user_credential = get_user_id_and_password(user_id)
     
     if user_credential and bcrypt.checkpw(password.encode('UTF-8'), user_credential['password'].encode('UTF-8')):
         user_id = user_credential['user_id']
