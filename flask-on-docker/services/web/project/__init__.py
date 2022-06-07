@@ -37,7 +37,7 @@ def hello_world():
 @app.route("sign-up", methods=['POST'])
 def sign_up():
     new_user = request.json
-    new_user['password'] bcrypt.hashpw(
+    new_user['password'] = bcrypt.hashpw(
         new_user['password'].encode('UTF-8'),
         bcrypt.salt('secret')
     )
