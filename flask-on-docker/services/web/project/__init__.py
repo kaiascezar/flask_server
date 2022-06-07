@@ -61,7 +61,7 @@ def sign_up():
 @app.route("/login", methods=['POST'])
 def login():
     credential = request.json
-    email = credential['user_id']
+    user_id = credential['user_id']
     password = credential['password']
     
     row = database.execute(text(""".
