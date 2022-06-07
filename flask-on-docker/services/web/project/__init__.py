@@ -17,13 +17,13 @@ class User(db.Model):
     __tablename__ = "users"
     
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(100), unique=True, nullable=False)
+    userid = db.Column(db.String(100), unique=True, nullable=False)
     password = db.Column(db.Unicode(256), nullable=False)
     decryptkey = db.Column(db.String(100), nullable=False)
     
     
-    def __init__(self, user_id, password, decryptkey):
-        self.user_id = user_id
+    def __init__(self, userid, password, decryptkey):
+        self.user_id = userid
         self.set_password(password)
         self.decryptkey = decryptkey
     def set_password(self, password):
@@ -59,10 +59,10 @@ def hello_world():
 #    
 #    return jsonify(new_user_info)
 
-@app.route("/login", methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
     credential = request.json
-    user_id = credential['user_id']
+    userid = credential['userid']
     password = credential['password']
     
     row = db.execute(text(""".
@@ -70,21 +70,21 @@ def login():
             id,
             password
         FROM users
-        WHERE user_id =: user_id
-    """), {'user_id' : user_id}).fetchone()
-    print(row)
+        WHERE userid = :userid
+    """), {'userid' : userid}).fetchone()
     
-    if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].encode('UTF-8')):
-        user_id = row['user_id']
+    if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].endcode('UTF-8')):
+        user_id = row['userid']
         payload = {
             'user_id' : user_id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24) 
         }
-        token = jwt.encode(payload, app.config['JWT_SECRET_KEY'],
-        'HS256')
+        token = jwt.encode(payload, app.config['SECRET', 'HS256'])
         
         return jsonify({
             'access_token' : token.decode('UTF-8')
         })
+        
     else:
         return '', 401
+    
