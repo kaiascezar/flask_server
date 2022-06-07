@@ -34,7 +34,7 @@ class User(db.Model):
 def hello_world():
     return jsonify(hello="world")
 
-@app.route("sign-up", methods=['POST'])
+@app.route("/sign-up", methods=['POST'])
 def sign_up():
     new_user = request.json
     new_user['password'] = bcrypt.hashpw(
