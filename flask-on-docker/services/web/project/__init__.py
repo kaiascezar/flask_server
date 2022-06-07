@@ -25,7 +25,7 @@ class User(db.Model):
     
     def __init__(self, user_id, password, decryptkey):
         self.user_id = user_id
-        self.password
+        self.password = password
         self.decryptkey = decryptkey
     
 @app.route('/')
