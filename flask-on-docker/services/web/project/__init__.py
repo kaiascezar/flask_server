@@ -12,6 +12,7 @@ import jwt
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
+app.database = db
 
 
 
@@ -35,7 +36,7 @@ class User(db.Model):
     
     
 def get_user_id_and_password(user_id):
-    row = current_app.db.execute(text("""
+    row = current_app.database.execute(text("""
         SELECT
             id,
             hashed_password
