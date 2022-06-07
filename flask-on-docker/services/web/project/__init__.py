@@ -2,6 +2,7 @@ from datetime import timedelta, datetime
 import json
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import text
 from werkzeug.security import generate_password_hash, check_password_hash
 import bcrypt
 import jwt
