@@ -23,7 +23,7 @@ class User(db.Model):
     
     
     def __init__(self, userid, password, decryptkey):
-        self.user_id = userid
+        self.userid = userid
         self.set_password(password)
         self.decryptkey = decryptkey
     def set_password(self, password):
