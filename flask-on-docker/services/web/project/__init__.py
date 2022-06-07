@@ -7,7 +7,7 @@ app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
 
-class User(db.model):
+class User(db.Model):
     __tablename__ = "users"
 
     id = db.Column(db.Integer, primary_key=True)
