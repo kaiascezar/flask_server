@@ -1,4 +1,4 @@
-import datetime
+from datetime import timedelta, datetime
 import json
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -77,7 +77,7 @@ def login():
         user_id = row['user_id']
         payload = {
             'user_id' : user_id,
-            'exp' : datatime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         token = jwt.encode(payload, app.config['JWT_SECRET_KEY'],
         'HS256')
