@@ -36,28 +36,28 @@ class User(db.Model):
 def hello_world():
     return jsonify(hello="world")
 
-@app.route("/sign-up", methods=['POST'])
-def sign_up():
-    new_user = request.json
-    new_user['password'] = bcrypt.hashpw(
-        new_user['password'].encode('UTF-8'),
-        bcrypt.salt('secret')
-    )
-    
-    new_user_id = db.execute(text("""
-        INSERT INTO users(
-            user_id,
-            hashed_password,
-            decryptkey
-        ) VALUES (
-            :user_id,
-            hashed_password,
-            decryptkey
-        )    
-    """), new_user).lastrowid
-    new_user_info = get_user(new_user_id)
-    
-    return jsonify(new_user_info)
+#@app.route("/sign-up", methods=['POST'])
+#def sign_up():
+#    new_user = request.json
+#    new_user['password'] = bcrypt.hashpw(
+#        new_user['password'].encode('UTF-8'),
+#        bcrypt.salt('secret')
+#    )
+#    
+#    new_user_id = db.execute(text("""
+#        INSERT INTO users(
+#            user_id,
+#            hashed_password,
+#            decryptkey
+#        ) VALUES (
+#            :user_id,
+#            hashed_password,
+#            decryptkey
+#        )    
+#    """), new_user).lastrowid
+#    new_user_info = get_user(new_user_id)
+#    
+#    return jsonify(new_user_info)
 
 @app.route("/login", methods=['POST'])
 def login():
@@ -72,6 +72,7 @@ def login():
         FROM users
         WHERE user_id =: user_id
     """), {'user_id' : user_id}).fetchone()
+    print(row)
     
     if row and bcrypt.checkpw(password.encode('UTF-8'), row['password'].encode('UTF-8')):
         user_id = row['user_id']
