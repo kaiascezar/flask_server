@@ -18,7 +18,7 @@ class User(db.Model):
         self.email = email
 
 
-@app.route("/")
+@app.route("/login")
 def hello_world():
     user = User.query.first()
     return jsonify('hello' + user.email)
