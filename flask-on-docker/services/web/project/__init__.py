@@ -13,8 +13,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    active = db.Column(db.Boolean(), default=True, nullable=False)
-
+    
     def __init__(self, name, password):
         self.name = name
         self.password = password
