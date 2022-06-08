@@ -1,13 +1,24 @@
 from flask import Flask, jsonify, request, session, current_app, g
 from flask.json import JSONEncoder
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import text
+import psycopg2
+from credentials import DATABASE as DB
 
 
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
-db = SQLAlchemy(app)
+db = psycopg2.connect(dbname=DB['GTN_User'],
+                      user=DB['GTN_Admin'],
+                      host=DB['localhost'],
+                      password=DB['GTNAdmin!123'],
+                      port=5432)
 
+#cur = db.cursor()
+#
+#cur.execute("""CREATE TABLE users (
+#                    id INT,
+#                    userid TEXT,
+#                    password TEXT
+#            )""")
 
 class User(db.Model):
     __tablename__ = "users"
