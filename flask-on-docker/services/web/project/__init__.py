@@ -24,7 +24,7 @@ def hello_world():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
-    userid = request.json['userid']
+    userid = request.form['userid']
     password = request.form['password']
     db.execute("select userid, password from users where useerid='{}' and password = '{}';".format(userid, password))
     result = db.fetchone()
