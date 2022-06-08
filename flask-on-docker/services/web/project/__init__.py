@@ -41,14 +41,22 @@ def get_user_password(userid):
         'userid' : row['userid'],
         'password' : row['password']
     } if row else None
+    
+def test():
+    test = db.execute(text("""
+        select
+            *
+        from users
+        """))
+    return print(test)
 
 @app.route("/login", methods=['POST'])
 def login():
     if request.method == 'POST':
-        request_id = request.json
-        userid = request_id['userid']
-        get_user_password(userid)
-        return print(get_user_password)
+        #request_id = request.json
+        #userid = request_id['userid']
+        #get_user_password(userid)
+        return print(test)
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
