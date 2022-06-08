@@ -45,15 +45,16 @@ def get_user_password(userid):
 @app.route("/login", methods=['POST'])
 def login():
     if request.method == 'POST':
+        return "hello"
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
-        return db.execute(text("""
-        select
-            userid,
-            password
-        from users
-        """)), {'userid' : userid}.fetchone()
+#        return db.execute(text("""
+#        select
+#            userid,
+#            password
+#        from users
+#        """)), {'userid' : userid}.fetchone()
         #user_credential = get_user_password(userid)
         
 #        ##if userid == user_credential['userid'] and password == user_credential['password']:
