@@ -1,9 +1,11 @@
 from flask import Flask, jsonify, request, session, current_app, g
+from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 
 
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
+api = Api(app)
 db = SQLAlchemy(app)
 
 
@@ -18,17 +20,19 @@ class User(db.Model):
         self.userid = userid
         self.password = password
 
+
 @app.route("/")
 def hello_world():
     return jsonify(hello="world")
 
-@app.route("/login", methods=['GET', 'POST'])
+@app.route("/login", methods=['GET'])
 def login():
-    userid = request.form['userid']
-    password = request.form['password']
-    db.execute("select userid, password from users where userid='{}' and password = '{}';".format(userid, password))
-    result = db.fetchone()
-    if not result:
-        return '해당 사용자가 존재하지 않습니다.', 401
-    elif result[0] == userid and result[1] == password:
-        return jsonify("access Token"), 200
+    if request.method == 'GET':
+        users = User.query.all()
+        results = [
+            {
+                "id": user.userid,
+                "password": user.password
+            } for user in users]
+        
+        return {"Access Token"}
