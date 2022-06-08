@@ -34,8 +34,7 @@ class User(db.Model):
 #    } if row else None
     
 def test():
-    db.execute("select * from users")
-    rows = db.fetchone
+    rows = print(User.qurey.all())
     
     return jsonify(rows)
 
