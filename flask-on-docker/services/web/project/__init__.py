@@ -26,7 +26,7 @@ def hello_world():
 def login():
     userid = request.json['userid']
     password = request.json['password']
-    db.execute("select userid, password from users where useerid='{}' and password = '{}';".format(userid, password))
+    db.execute("select userid, password from users where userid='{}' and password = '{}';".format(userid, password))
     result = db.fetchone()
     if not result:
         return '해당 사용자가 존재하지 않습니다.', 400
