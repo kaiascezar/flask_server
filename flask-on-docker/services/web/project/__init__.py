@@ -1,6 +1,7 @@
 from flask import Flask, url_for, render_template
 from flask import request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
+
 #from service import blogopen
 
 
@@ -9,7 +10,7 @@ app = Flask(__name__)
 app.config.from_object("project.config.Config")
 app.debug = True
 
-api = Api(app)
+#api = Api(app)
 db = SQLAlchemy(app)
 #cur = db.cursor()
 
@@ -25,18 +26,18 @@ class User(db.Model):
         self.password = password
 
 
-class Check(Resource):
-    def get(self):
-        rows = User.query.all()
-        result = [{
-            'id': row.id,
-            'name': row.name,
-            'password': row.password
-        } for row in rows]
-        return result
-
-
-api.add_resource(Check, '/fruit')
+#class Check(Resource):
+#    def get(self):
+#        rows = User.query.all()
+#        result = [{
+#            'id': row.id,
+#            'name': row.name,
+#            'password': row.password
+#        } for row in rows]
+#        return result
+#
+#
+#api.add_resource(Check, '/fruit')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
