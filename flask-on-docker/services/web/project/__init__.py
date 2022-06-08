@@ -82,8 +82,6 @@ def login_required(f):
 def create_app(test_config = None):
     app = Flask(__name__)
 
-    app.json_encoder = CustomJSONEncoder
-
     if test_config is None:
         app.config.from_pyfile("config.py")
     else:
