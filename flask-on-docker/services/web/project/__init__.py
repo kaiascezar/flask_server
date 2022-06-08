@@ -29,6 +29,6 @@ def login():
     db.execute("select userid, password from users where userid='{}' and password = '{}';".format(userid, password))
     result = db.fetchone()
     if not result:
-        return '해당 사용자가 존재하지 않습니다.', 400
+        return '해당 사용자가 존재하지 않습니다.', 401
     elif result[0] == userid and result[1] == password:
         return jsonify("access Token"), 200
