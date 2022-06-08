@@ -12,7 +12,7 @@ def page_not_found(error):
      return render_template('page_not_found.html'), 404
 
 class User(db.Model):
-	""" Create user table"""
+	__tablename__ : "users"
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(80), unique=True)
 	password = db.Column(db.String(80))
