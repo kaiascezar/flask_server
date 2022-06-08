@@ -11,7 +11,7 @@ app.debug = True
 
 api = Api(app)
 db = SQLAlchemy(app)
-
+cur = db.cursor()
 
 class User(db.Model):
     __tablename__ = "users"
@@ -38,8 +38,8 @@ api.add_resource(Check, '/fruit')
 def login():
     name = request.form['name']
     password = request.form['password']
-    db.execute("select id, password from users where id='{}' and password = '{}';".format(name, password))
-    result = db.fetchone
+    cur.execute("select id, password from users where id='{}' and password = '{}';".format(name, password))
+    result = cur.fetchone
     if not result:
         return "비밀번호를 확인하세요", 400
     elif result[0] == name and result[1] == password:
