@@ -1,7 +1,7 @@
 from flask import Flask, url_for, render_template
 from flask import request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
-#from service import blogopen
+from service import blogopen
 
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
@@ -16,12 +16,10 @@ class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(80), unique=True)
 	password = db.Column(db.String(80))
-	email = db.Column(db.String(80), unique=True)
 
-	def __init__(self, username, password, email):
+	def __init__(self, username, password):
 		self.username = username
 		self.password = password
-		self.email = email
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
@@ -55,8 +53,7 @@ def login():
 def register():
 	"""Register Form"""
 	if request.method == 'POST':
-		new_user = User(username=request.form['username'], password=request.form['password'], 
-			email=request.form['email'])
+		new_user = User(username=request.form['username'], password=request.form['password'])
 
 		db.session.add(new_user)
 		db.session.commit()
