@@ -3,7 +3,6 @@ from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Column, TEXT, INTEGER
 
-from credentials import DATABASE as DB
 
 
 app = Flask(__name__)
