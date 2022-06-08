@@ -34,7 +34,7 @@ class Check(Resource):
 
 api.add_resource(Check, '/fruit')
 
-@app.route('/login', methods=['GET'])
+@app.route('/login', methods=['POST'])
 def login():
     name = request.form['name']
     password = request.form['password']
