@@ -1,91 +1,36 @@
-from flask import Flask, jsonify, request, session, current_app, g
-from flask.json import JSONEncoder
-#from flask_sqlalchemy import SQLAlchemy
-import psycopg2 as pg2
+from flask import Flask
+from flask_restful import Resource, Api
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, TEXT, INTEGER
+
+from credentials import DATABASE as DB
 
 
 app = Flask(__name__)
-#app.config.from_object("project.config.Config")
-db = pg2.connect(dbname='GTN_User',
-                      user='GTN_Admin',
-                      host='localhost',
-                      password='GTNAdmin!123',
-                      port=5433)
+app.config.from_object("project.config.Config")
+app.debug = True
 
-cur = db.cursor()
+api = Api(app)
+db = SQLAlchemy(app)
 
-cur.execute("""CREATE TABLE users (
-                    id INT,
-                    userid TEXT(20),
-                    password VARCHAR(200)
-            )""")
-db.commit()
-#class User(db.Model):
-#    __tablename__ = "users"
-#
-#    id = db.Column(db.Integer, primary_key=True)
-#    userid = db.Column(db.String(32), unique=True, nullable=False)
-#    password = db.Column(db.String(256), nullable=False)
-#
-#    def __init__(self, userid, password):
-#        self.userid = userid
-#        self.password = password
 
-#def get_user_password(userid):
-#    row = db.execute(text("""
-#        select
-#            userid,
-#            password
-#        from users
-#        """)), {'userid' : userid}.fetchone()
-#
-#    return {
-#        'userid' : row['userid'],
-#        'password' : row['password']
-#    } if row else None
-    
-@app.route('/signup', methods=['POST'])
-def signup():
-    id = request.form['id']
-    password = request.form['password']
-    cur.execute('select id from users where id')   
-     
+class Fruit(db.Model):
+    __tablename__ = "test"
 
-@app.route("/login")
-def login():
-    userid = request.form["userid"]
-    password = request.form["password"]
-    cur.execute("select id, password from users where userid='{}' and password = '{}';".format(userid, password))
-    result = cur.fetchone
-    if not result:
-        return '존재하지 않는 사용자', 400
-    elif result[0] == userid and result[1] == password:
-        return 'token'
-    #users = db.query.all()
-    #if request.method == 'POST':
-        #request_id = request.json
-        #userid = request_id['userid']
-        #get_user_password(userid)
-    #return print(users)
-#        credential = request.json
-#        userid = credential['userid']
-#        password = credential['password']
-#        return db.execute(text("""
-#        select
-#            userid,
-#            password
-#        from users
-#        """)), {'userid' : userid}.fetchone()
-        #user_credential = get_user_password(userid)
-        
-#        ##if userid == user_credential['userid'] and password == user_credential['password']:
-        ##    user_id = user_credential['id']
-        #    
-        #    return jsonify({'access Token'})
-            
-        
-        #results = db.fetchone
-        
-#        return {results}
-#    else:
-#        return '', 401
+    id = Column(INTEGER, autoincrement=True, primary_key=True)
+    name = Column(TEXT)
+    color = Column(TEXT)
+
+
+class Check(Resource):
+    def get(self):
+        rows = Fruit.query.all()
+        result = [{
+            'id': row.id,
+            'name': row.name,
+            'color': row.color
+        } for row in rows]
+        return result
+
+
+api.add_resource(Check, '/fruit')
