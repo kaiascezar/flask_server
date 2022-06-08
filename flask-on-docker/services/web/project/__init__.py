@@ -17,8 +17,8 @@ class Fruit(db.Model):
     __tablename__ = "test"
 
     id = Column(INTEGER, autoincrement=True, primary_key=True)
-    name = Column(TEXT)
-    color = Column(TEXT)
+    name = Column(TEXT, unique=True, nullable=False)
+    password = Column(TEXT, nullable=False)
 
 
 class Check(Resource):
@@ -27,7 +27,7 @@ class Check(Resource):
         result = [{
             'id': row.id,
             'name': row.name,
-            'color': row.color
+            'password': row.password
         } for row in rows]
         return result
 
