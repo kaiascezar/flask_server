@@ -45,11 +45,7 @@ def get_user_password(userid):
     } if row else None
     
 def test():
-    test = db.execute(text("""
-        select
-            *
-        from users
-        """))
+    test = db.execute("select * from users")
     return test
 
 @app.route("/login")
