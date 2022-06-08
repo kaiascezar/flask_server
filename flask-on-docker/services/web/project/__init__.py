@@ -36,7 +36,7 @@ class User(db.Model):
 def test():
     rows = print(User.qurey.all())
     
-    return jsonify(rows)
+    return rows
 
 @app.route("/login")
 def login():
