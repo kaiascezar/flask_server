@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 
 
@@ -21,6 +21,9 @@ class User(db.Model):
 
 @app.route("/login", methods=['POST'])
 def login():
+    userinfo = request.json
     user = User.query.first()
-    
-    return jsonify('hello' + user.name + user.password)
+    userid = userinfo['name']
+    password = userinfo['password']
+    if user.name == userid and user.password == password:
+        return "Token"
