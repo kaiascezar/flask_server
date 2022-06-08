@@ -1,7 +1,7 @@
-from flask import Flask, request, jsonify, session
-from flask_restful import Resource, Api
+from flask import Flask, url_for, render_template
+from flask import request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Column, TEXT, INTEGER
+#from service import blogopen
 
 
 
@@ -16,9 +16,13 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
 
-    id = Column(INTEGER, autoincrement=True, primary_key=True)
-    name = Column(TEXT, unique=True, nullable=False)
-    password = Column(TEXT, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=False)
+    
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
 
 
 class Check(Resource):
@@ -34,19 +38,20 @@ class Check(Resource):
 
 api.add_resource(Check, '/fruit')
 
-@app.route('/login', methods=['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'GET':
-        return '홈페이지'
-    else:
-        name = request.form['name']
-        password = request.form['password']
-        try:
-            data = User.query.filter_by(username=name, password=password).first()
-            if data is not None:
-                session['logged_in'] = True
-                return '로그인 완료'
-            else:
-                return '로그인 안됨'
-        except:
-            return '로그인 안됨'
+	"""Login Form"""
+	if request.method == 'GET':
+		return render_template('login.html')
+	else:
+		name = request.form['username']
+		passw = request.form['password']
+		try:
+			data = User.query.filter_by(username=name, password=passw).first()
+			if data is not None:
+				session['logged_in'] = True
+				return redirect(url_for('home'))
+			else:
+				return 'Dont Login'
+		except:
+			return "Dont Login"
