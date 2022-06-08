@@ -45,7 +45,8 @@ def get_user_password(userid):
 @app.route("/login", methods=['POST'])
 def login():
     if request.method == 'POST':
-        userid = 'userid'
+        request_id = request.json
+        userid = request_id['userid']
         get_user_password(userid)
         return print(get_user_password)
 #        credential = request.json
