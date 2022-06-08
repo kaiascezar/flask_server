@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request, session, current_app, g
-from flask_restful import Resource, Api
 from flask_sqlalchemy import SQLAlchemy
 
 
