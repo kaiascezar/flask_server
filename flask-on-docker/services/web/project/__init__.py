@@ -12,8 +12,7 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://GTN_Admin:GTNAdmin!123@db:5432/GTN_User"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
 
@@ -46,19 +45,25 @@ def get_user_password(userid):
 @app.route("/login", methods=['POST'])
 def login():
     if request.method == 'POST':
-        credential = request.json
-        userid = credential['userid']
-        password = credential['password']
-        user_credential = get_user_password(userid)
+#        credential = request.json
+#        userid = credential['userid']
+#        password = credential['password']
+        return db.execute(text("""
+        select
+            userid,
+            password
+        from users
+        """)), {'userid' : userid}.fetchone()
+        #user_credential = get_user_password(userid)
         
-        if userid == user_credential['userid'] and password == user_credential['password']:
-            user_id = user_credential['id']
+#        ##if userid == user_credential['userid'] and password == user_credential['password']:
+        ##    user_id = user_credential['id']
+        #    
+        #    return jsonify({'access Token'})
             
-            return jsonify({'access Token'})
-            
         
-        results = db.fetchone
+        #results = db.fetchone
         
-        return {results}
-    else:
-        return '', 401
+#        return {results}
+#    else:
+#        return '', 401
