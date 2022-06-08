@@ -14,7 +14,7 @@ def create_db():
 
 @cli.command("seed_db")
 def seed_db():
-    db.session.add(Fruit(name="BillyMin", color='test1234!'))
+    db.session.add(Fruit(name="BillyMin", password='test1234!'))
     db.session.commit()
     
 
