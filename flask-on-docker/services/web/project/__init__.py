@@ -10,7 +10,7 @@ db = pg2.connect(dbname='GTN_User',
                       user='GTN_Admin',
                       host='localhost',
                       password='GTNAdmin!123',
-                      port=5432)
+                      port=5433)
 
 cur = db.cursor()
 
