@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
-api = Api(app)
 db = SQLAlchemy(app)
 
 
