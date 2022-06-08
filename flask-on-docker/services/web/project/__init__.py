@@ -2,6 +2,7 @@ import jwt
 import bcrypt
 
 from flask      import Flask, request, jsonify, current_app, Response, g
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import create_engine, text
 from datetime   import datetime, timedelta
 from functools  import wraps
@@ -88,7 +89,7 @@ def create_app(test_config = None):
         app.config.update(test_config)
 
     database     = create_engine(app.config.from_object("project.config.Config"))
-    app.database = database
+    db = SQLAlchemy(database)
 
     @app.route("/sign-up", methods=['POST'])
     def sign_up():
