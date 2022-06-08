@@ -7,12 +7,12 @@ app = Flask(__name__)
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
-@app.errorhandler(404)
-def page_not_found(error):
-     return render_template('page_not_found.html'), 404
+#@app.errorhandler(404)
+#def page_not_found(error):
+#     return render_template('page_not_found.html'), 404
 
 class User(db.Model):
-	__tablename__ : "users"
+	__tablename__ = "users"
 
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String(80), unique=True, nullable=False)
