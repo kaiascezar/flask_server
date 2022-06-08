@@ -23,9 +23,9 @@ class User(db.Model):
 def hello_world():
     return jsonify(hello="world")
 
-@app.route("/login", methods=['GET'])
+@app.route("/login", methods=['POST'])
 def login():
-    if request.method == 'GET':
+    if request.method == 'POST':
         users = User.query.all()
         results = [
             {
@@ -33,4 +33,4 @@ def login():
                 "password": user.password
             } for user in users]
         
-        return {"Access Token"}
+        return {results}
