@@ -54,7 +54,7 @@ def test():
 
 @app.route("/login", methods=['POST'])
 def login():
-    if request.method == 'POST':
+    #if request.method == 'POST':
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
