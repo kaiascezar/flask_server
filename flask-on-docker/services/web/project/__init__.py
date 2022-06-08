@@ -1,9 +1,12 @@
 from flask import Flask, jsonify, request, session, current_app, g
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Column, TEXT, INTEGER
+
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://GTN_Admin:GTNAdmin!123@db:5432/GTN_User"
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
