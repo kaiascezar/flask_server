@@ -1,5 +1,5 @@
 from flask import Flask, url_for, render_template
-from flask import request, redirect, session
+from flask import request, redirect, session, flash
 from flask_sqlalchemy import SQLAlchemy
 
 #from service import blogopen
@@ -41,18 +41,18 @@ class User(db.Model):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-	"""Login Form"""
-	if request.method == 'GET':
-		return render_template('login.html')
-	else:
-		name = request.form['username']
-		passw = request.form['password']
-		try:
-			data = User.query.filter_by(username=name, password=passw).first()
-			if data is not None:
-				session['logged_in'] = True
-				return redirect(url_for('home'))
-			else:
-				return 'Dont Login'
-		except:
-			return "Dont Login"
+	if request.method == 'POST' and 'username' in request.form and 'password' in request.form:
+            username = request.form['username']
+            password = request.form['password']
+            print(password)
+        
+            db.execute('SELECT * FROM users WHERE username = %s', (username,))
+            account = db.fetchone()
+            
+            if account:
+                password = account['password']
+                print(password)
+            else:
+                flash('Incorrect username/password')
+            
+        return 'access token'
