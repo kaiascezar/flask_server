@@ -1,35 +1,35 @@
 from flask import Flask, jsonify, request, session, current_app, g
 from flask.json import JSONEncoder
-import psycopg2
+import psycopg2 as pg2
 from credentials import DATABASE as DB
 
 
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
-db = psycopg2.connect(dbname=DB['GTN_User'],
+db = pg2.connect(dbname=DB['GTN_User'],
                       user=DB['GTN_Admin'],
                       host=DB['localhost'],
                       password=DB['GTNAdmin!123'],
                       port=5432)
 
-#cur = db.cursor()
+cur = db.cursor()
+
+cur.execute("""CREATE TABLE users (
+                    id INT,
+                    userid TEXT(20),
+                    password VARCHAR(200)
+            )""")
+db.commit()
+#class User(db.Model):
+#    __tablename__ = "users"
 #
-#cur.execute("""CREATE TABLE users (
-#                    id INT,
-#                    userid TEXT,
-#                    password TEXT
-#            )""")
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    userid = db.Column(db.String(32), unique=True, nullable=False)
-    password = db.Column(db.String(256), nullable=False)
-
-    def __init__(self, userid, password):
-        self.userid = userid
-        self.password = password
+#    id = db.Column(db.Integer, primary_key=True)
+#    userid = db.Column(db.String(32), unique=True, nullable=False)
+#    password = db.Column(db.String(256), nullable=False)
+#
+#    def __init__(self, userid, password):
+#        self.userid = userid
+#        self.password = password
 
 #def get_user_password(userid):
 #    row = db.execute(text("""
@@ -49,12 +49,12 @@ class User(db.Model):
 
 @app.route("/login")
 def login():
-    users = User.query.all()
+    users = db.query.all()
     #if request.method == 'POST':
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-    return print(text(users))
+    return print(users)
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
