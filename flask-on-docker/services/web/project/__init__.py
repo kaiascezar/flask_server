@@ -1,13 +1,23 @@
+from cv2 import sepFilter2D
 from flask import Flask, jsonify, request, session, current_app, g
+from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
+
+class CustomJSONEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, set):
+            return list(obj)
+        return JSONEncoder.default(self, obj)
 
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = f"postgresql://GTN_Admin:GTNAdmin!123@db:5432/GTN_User"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+
 
 
 class User(db.Model):
@@ -34,11 +44,6 @@ def get_user_password(userid):
         'password' : row['password']
     } if row else None
 
-
-@app.route("/")
-def hello_world():
-    return jsonify(hello="world")
-
 @app.route("/login", methods=['POST'])
 def login():
     if request.method == 'POST':
@@ -48,7 +53,7 @@ def login():
         user_credential = get_user_password(userid)
         
         if userid == user_credential['userid'] and password == user_credential['password']:
-            userid = user_credential['userid']
+            user_id = user_credential['id']
             
             return jsonify({'access Token'})
             
@@ -56,3 +61,5 @@ def login():
         results = db.fetchone
         
         return {results}
+    else:
+        return '', 401
