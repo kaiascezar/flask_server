@@ -26,4 +26,4 @@ def login():
     userid = userinfo['name']
     password = userinfo['password']
     if user.name == userid and user.password == password:
-        return "Token"
+        return jsonify("Token")
