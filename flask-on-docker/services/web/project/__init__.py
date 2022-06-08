@@ -22,15 +22,15 @@ class User(db.Model):
 		self.username = username
 		self.password = password
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-	if not session.get('logged_in'):
-		return render_template('index.html')
-	else:
-		if request.method == 'POST':
-			username = request.form['username']
-			return render_template('index.html', data=blogopen(username))
-		return render_template('index.html')
+#@app.route('/', methods=['GET', 'POST'])
+#def home():
+#	if not session.get('logged_in'):
+#		return render_template('index.html')
+#	else:
+#		if request.method == 'POST':
+#			username = request.form['username']
+#			return render_template('index.html', data=blogopen(username))
+#		return render_template('index.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -68,6 +68,5 @@ def logout():
 	return redirect(url_for('home'))
 
 if __name__ == '__main__':
-	db.create_all()
 	app.secret_key = "123123123"
 	app.run(host='0.0.0.0', debug=True)
