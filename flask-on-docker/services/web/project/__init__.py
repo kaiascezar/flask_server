@@ -1,4 +1,3 @@
-from cv2 import sepFilter2D
 from flask import Flask, jsonify, request, session, current_app, g
 from flask.json import JSONEncoder
 from flask_sqlalchemy import SQLAlchemy
