@@ -4,18 +4,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import text
 
 
-class CustomJSONEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, set):
-            return list(obj)
-        return JSONEncoder.default(self, obj)
-
-
 app = Flask(__name__)
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
-
-
 
 
 class User(db.Model):
@@ -43,8 +34,10 @@ class User(db.Model):
 #    } if row else None
     
 def test():
-    test1 = db.execute("select * from users")
-    return jsonify(test1)
+    db.execute("select * from users")
+    rows = db.fetchone
+    
+    return jsonify(rows)
 
 @app.route("/login")
 def login():
