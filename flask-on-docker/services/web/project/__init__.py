@@ -55,4 +55,4 @@ def login():
             else:
                 flash('Incorrect username/password')
             
-        return 'access token'
+        return print('access token')
