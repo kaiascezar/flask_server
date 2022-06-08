@@ -45,8 +45,8 @@ class User(db.Model):
 #    } if row else None
     
 def test():
-    test = db.execute("select * from users")
-    return test
+    test1 = db.execute("select * from users")
+    return jsonify(test1)
 
 @app.route("/login")
 def login():
@@ -54,7 +54,7 @@ def login():
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-    return print(test)
+    return test
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
