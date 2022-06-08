@@ -31,18 +31,18 @@ class User(db.Model):
         self.userid = userid
         self.password = password
 
-def get_user_password(userid):
-    row = db.execute(text("""
-        select
-            userid,
-            password
-        from users
-        """)), {'userid' : userid}.fetchone()
-
-    return {
-        'userid' : row['userid'],
-        'password' : row['password']
-    } if row else None
+#def get_user_password(userid):
+#    row = db.execute(text("""
+#        select
+#            userid,
+#            password
+#        from users
+#        """)), {'userid' : userid}.fetchone()
+#
+#    return {
+#        'userid' : row['userid'],
+#        'password' : row['password']
+#    } if row else None
     
 def test():
     test = db.execute("select * from users")
@@ -54,7 +54,7 @@ def login():
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-        return print(test)
+    return print(test)
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
