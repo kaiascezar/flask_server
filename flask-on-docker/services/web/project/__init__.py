@@ -12,9 +12,7 @@ class CustomJSONEncoder(JSONEncoder):
 
 
 app = Flask(__name__)
-#app.config.from_object("project.config.Config")
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://GTN_Admin:GTNAdmin!123@db:5432/GTN_User'
-app.config ['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
 
