@@ -43,17 +43,29 @@ db.commit()
 #        'password' : row['password']
 #    } if row else None
     
-   
+@app.route('/signup', methods=['POST'])
+def signup():
+    id = request.form['id']
+    password = request.form['password']
+    cur.execute('select id from users where id')   
      
 
 @app.route("/login")
 def login():
-    users = db.query.all()
+    userid = request.form["userid"]
+    password = request.form["password"]
+    cur.execute("select id, password from users where userid='{}' and password = '{}';".format(userid, password))
+    result = cur.fetchone
+    if not result:
+        return '존재하지 않는 사용자', 400
+    elif result[0] == userid and result[1] == password:
+        return 'token'
+    #users = db.query.all()
     #if request.method == 'POST':
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-    return print(users)
+    #return print(users)
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
