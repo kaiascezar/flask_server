@@ -38,11 +38,12 @@ class User(db.Model):
 
 @app.route("/login")
 def login():
+    users = User.query.all()
     #if request.method == 'POST':
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-    return print(User.qurey.all())
+    return print(users)
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
