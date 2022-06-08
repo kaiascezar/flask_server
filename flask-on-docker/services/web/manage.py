@@ -1,5 +1,5 @@
 from flask.cli import FlaskGroup
-from project import app, db
+from project import app, db, Check
 
 
 cli = FlaskGroup(app)
@@ -14,7 +14,7 @@ def create_db():
 
 @cli.command("seed_db")
 def seed_db():
-#    db.session.add(User(userid="BillyMin", password='test1234!'))
+    db.session.add(Check(name="BillyMin", color='test1234!'))
     db.session.commit()
     
 
