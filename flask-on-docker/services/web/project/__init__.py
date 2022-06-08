@@ -50,7 +50,7 @@ def test():
             *
         from users
         """))
-    return print(test)
+    return test
 
 @app.route("/login", methods=['POST'])
 def login():
