@@ -1,72 +1,127 @@
-from flask import Flask, url_for, render_template
-from flask import request, redirect, session
-from flask_sqlalchemy import SQLAlchemy
-#from service import blogopen
+import jwt
+import bcrypt
 
-app = Flask(__name__)
-app.config.from_object("project.config.Config")
-db = SQLAlchemy(app)
+from flask      import Flask, request, jsonify, current_app, Response, g
+from sqlalchemy import create_engine, text
+from datetime   import datetime, timedelta
+from functools  import wraps
 
-#@app.errorhandler(404)
-#def page_not_found(error):
-#     return render_template('page_not_found.html'), 404
+def get_user(user_id):
+    user = current_app.database.execute(text("""
+        SELECT 
+            id,
+            name,
+            email,
+            profile
+        FROM users
+        WHERE id = :user_id
+    """), {
+        'user_id' : user_id 
+    }).fetchone()
 
-class User(db.Model):
-	__tablename__ = "users"
+    return {
+        'id'      : user['id'],
+        'name'    : user['name'],
+        'email'   : user['email'],
+        'profile' : user['profile']
+    } if user else None
 
-	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String(80), unique=True, nullable=False)
-	password = db.Column(db.String(80), nullable=False)
+def insert_user(user):
+    return current_app.database.execute(text("""
+        INSERT INTO users (
+            name,
+            email,
+            profile,
+            hashed_password
+        ) VALUES (
+            :name,
+            :email,
+            :profile,
+            :password
+        )
+    """), user).lastrowid
 
-	def __init__(self, username, password):
-		self.username = username
-		self.password = password
+def get_user_id_and_password(email):
+    row = current_app.database.execute(text("""    
+        SELECT
+            id,
+            hashed_password
+        FROM users
+        WHERE email = :email
+    """), {'email' : email}).fetchone()
 
-#@app.route('/', methods=['GET', 'POST'])
-#def home():
-#	if not session.get('logged_in'):
-#		return render_template('index.html')
-#	else:
-#		if request.method == 'POST':
-#			username = request.form['username']
-#			return render_template('index.html', data=blogopen(username))
-#		return render_template('index.html')
+    return {
+        'id'              : row['id'],
+        'hashed_password' : row['hashed_password']
+    } if row else None
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	"""Login Form"""
-	if request.method == 'GET':
-		return render_template('login.html')
-	else:
-		name = request.form['username']
-		passw = request.form['password']
-		try:
-			data = User.query.filter_by(username=name, password=passw).first()
-			if data is not None:
-				session['logged_in'] = True
-				return redirect(url_for('home'))
-			else:
-				return 'Dont Login'
-		except:
-			return "Dont Login"
+#########################################################
+#       Decorators
+#########################################################
+def login_required(f):      
+    @wraps(f)                   
+    def decorated_function(*args, **kwargs):
+        access_token = request.headers.get('Authorization') 
+        if access_token is not None:  
+            try:
+                payload = jwt.decode(access_token, current_app.config['JWT_SECRET_KEY'], 'HS256') 
+            except jwt.InvalidTokenError:
+                 payload = None     
 
-@app.route('/register/', methods=['GET', 'POST'])
-def register():
-	"""Register Form"""
-	if request.method == 'POST':
-		new_user = User(username=request.form['username'], password=request.form['password'])
+            if payload is None: return Response(status=401)  
 
-		db.session.add(new_user)
-		db.session.commit()
-		return render_template('login.html')
-	return render_template('register.html')
+            user_id   = payload['user_id']  
+            g.user_id = user_id
+            g.user    = get_user(user_id) if user_id else None
+        else:
+            return Response(status = 401)  
 
-@app.route("/logout")
-def logout():
-	"""Logout Form"""
-	session['logged_in'] = False
-	return redirect(url_for('home'))
+        return f(*args, **kwargs)
+    return decorated_function
 
-if __name__ == '__main__':
-	app.secret_key = "123123123"
-	app.run(host='0.0.0.0', debug=True)
+def create_app(test_config = None):
+    app = Flask(__name__)
+
+    app.json_encoder = CustomJSONEncoder
+
+    if test_config is None:
+        app.config.from_pyfile("config.py")
+    else:
+        app.config.update(test_config)
+
+    database     = create_engine(app.config.from_object("project.config.Config"))
+    app.database = database
+
+    @app.route("/sign-up", methods=['POST'])
+    def sign_up():
+        new_user    = request.json
+        new_user['password'] = bcrypt.hashpw(
+            new_user['password'].encode('UTF-8'),
+            bcrypt.gensalt()
+        )
+
+        new_user_id = insert_user(new_user)
+        new_user    = get_user(new_user_id)
+
+        return jsonify(new_user)
+        
+    @app.route('/login', methods=['POST'])
+    def login():
+        credential      = request.json
+        email           = credential['email']
+        password        = credential['password']
+        user_credential = get_user_id_and_password(email)
+
+        if user_credential and bcrypt.checkpw(password.encode('UTF-8'), user_credential['hashed_password'].encode('UTF-8')): 
+            user_id = user_credential['id'] 
+            payload = {     
+                'user_id' : user_id,
+                'exp'     : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+            }
+            token = jwt.encode(payload, app.config['JWT_SECRET_KEY'], 'HS256') 
+
+            return jsonify({        
+                'access_token' : token.decode('UTF-8')
+            })
+        else:
+            return '', 401
