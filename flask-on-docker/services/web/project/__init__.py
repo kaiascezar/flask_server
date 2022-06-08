@@ -52,7 +52,7 @@ def test():
         """))
     return test
 
-@app.route("/login", methods=['POST'])
+@app.route("/login")
 def login():
     #if request.method == 'POST':
         #request_id = request.json
