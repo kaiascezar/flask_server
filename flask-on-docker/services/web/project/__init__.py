@@ -19,7 +19,8 @@ class User(db.Model):
         self.password = password
 
 
-@app.route("/login")
+@app.route("/login", methods=['POST'])
 def login():
     user = User.query.first()
+    
     return jsonify('hello' + user.name + user.password)
