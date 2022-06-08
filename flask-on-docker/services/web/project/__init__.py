@@ -22,4 +22,4 @@ class User(db.Model):
 @app.route("/login")
 def hello_world():
     user = User.query.first()
-    return jsonify('hello' + user.email + user.password)
+    return jsonify('hello' + user.email)
