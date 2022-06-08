@@ -43,7 +43,7 @@ def login():
         #request_id = request.json
         #userid = request_id['userid']
         #get_user_password(userid)
-    return print(users)
+    return print(text(users))
 #        credential = request.json
 #        userid = credential['userid']
 #        password = credential['password']
