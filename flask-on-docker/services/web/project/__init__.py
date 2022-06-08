@@ -1,10 +1,11 @@
 from flask import Flask, jsonify, request, session, current_app, g
 from flask.json import JSONEncoder
+#from flask_sqlalchemy import SQLAlchemy
 import psycopg2 as pg2
 
 
 app = Flask(__name__)
-app.config.from_object("project.config.Config")
+#app.config.from_object("project.config.Config")
 db = pg2.connect(dbname='GTN_User',
                       user='GTN_Admin',
                       host='localhost',
