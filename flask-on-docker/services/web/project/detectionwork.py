@@ -1,6 +1,6 @@
 import easyocr
 import cv2
-from algorithm import Algorithm                 # 개인정보 탐지 알고리즘 관련
+from algorithm import Recognition                 # 개인정보 탐지 알고리즘 관련
 
 
 # easyOCR 관련
@@ -24,20 +24,20 @@ class GtnOcr():
             br = (int(br[0]), int(br[1]))
             bl = (int(bl[0]), int(bl[1]))
 
-            if Algorithm.is_idcard(text, list1):
+            if Recognition.is_idcard(text, list1):
                 dict1.update({"tag": "idcard"})
 
-            if Algorithm.is_license(text, list2):
+            if Recognition.is_license(text, list2):
                 dict1.update({"tag": "license"})
 
-            if Algorithm.is_registration(text, list3):
+            if Recognition.is_registration(text, list3):
                 dict1.update({"tag": "registration"})
 
-            if Algorithm.jumin_check(text):
+            if Recognition.jumin_check(text):
                 cnt1 += 1
                 dict1.update({"jumin {}".format(cnt1): [{'x': tl[0], 'y':tl[1]}, {'x': br[0], 'y':br[1]}]})
 
-            if Algorithm.licensenum_check(text):
+            if Recognition.licensenum_check(text):
                 cnt2 += 1
                 dict1.update({"license {}".format(cnt2): [{'x': tl[0], 'y':tl[1]}, {'x': br[0], 'y':br[1]}]})
 

@@ -2,7 +2,7 @@ import re
 
 
 # 텍스트 기반 - 쪼개진 단어를 조합하여 개인정보 유형 파악
-class Algorithm():    
+class Recognition():    
     
     # 주민등록증
     def is_idcard(text, verif):
