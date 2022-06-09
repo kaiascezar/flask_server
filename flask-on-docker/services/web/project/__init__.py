@@ -33,13 +33,14 @@ def login():
     
     
     if user.name == userid and user.password == password:
-        return jsonify('token')
+        #return jsonify('token')
+        user_id = user.id
         #payload = {
         #    'user_id' : user.id,
         #    'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         #}
         #token = jwt.encode(payload, app.config['SECRET'], 'HS256')
         #
-        #return jsonify({
-        #    'access_token' : token
-        #})
+        return jsonify({
+            'user_id' : user_id
+        })
