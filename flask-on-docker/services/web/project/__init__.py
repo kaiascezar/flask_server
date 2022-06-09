@@ -32,12 +32,13 @@ def login():
     user = User.query.first()
     
     if user.name == userid and user.password == password:
-        payload = {
-            'user_id' : user.id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        }
-        token = jwt.encode(payload, app.config['SECRET'], 'HS256')
-        
-        return jsonify({
-            'access_token' : token
-        })
+        return jsonify('token')
+        #payload = {
+        #    'user_id' : user.id,
+        #    'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        #}
+        #token = jwt.encode(payload, app.config['SECRET'], 'HS256')
+        #
+        #return jsonify({
+        #    'access_token' : token
+        #})
