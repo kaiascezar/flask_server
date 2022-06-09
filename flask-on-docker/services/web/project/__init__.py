@@ -32,7 +32,7 @@ def login():
     user = User.query.first()
     
     if user.name == userid and user.password == password:
-        userid = userinfo['name']
+        userid = userinfo['id']
         payload = {
             'userid' : userid,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
