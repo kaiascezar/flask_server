@@ -1,7 +1,7 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
-from project.detectionwork import EasyOcr, PreProcessing
+from project.detectionwork import GtnOcr, PreProcessing
 
 
 app = Flask(__name__)
@@ -72,7 +72,7 @@ def ocr():
 
         file = request.files['file']
 
-        if file and EasyOcr.allowed_file(file.filename):
+        if file and GtnOcr.allowed_file(file.filename):
             # 검증에 필요한 자료구조 및 변수
             coordinate = dict()
             verif_idcard = list(0 for i in range(0, 5))
@@ -81,8 +81,8 @@ def ocr():
             jumin_cnt = 0
             license_cnt = 0
 
-            parsed = EasyOcr.reader.readtext(file.read())
-            contents = EasyOcr.get_coordinate(
+            parsed = GtnOcr.reader.readtext(file.read())
+            contents = GtnOcr.get_coordinate(
                 parsed, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt)
             # 개인정보 탐지 내용이 없을 경우
             if contents == {}:

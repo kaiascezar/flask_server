@@ -4,7 +4,7 @@ from algorithm import Algorithm                 # 개인정보 탐지 알고리�
 
 
 # easyOCR 관련
-class EasyOcr():
+class GtnOcr():
     ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg'}
     reader = easyocr.Reader(['ko', 'en'], gpu=False)
     
