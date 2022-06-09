@@ -32,9 +32,9 @@ def login():
     user = User.query.first()
     
     if user.name == userid and user.password == password:
-        userid = userinfo['id']
+        user_id = userinfo['id']
         payload = {
-            'userid' : userid,
+            'user_id' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         token = jwt.encode(payload, app.config['SECRET'], 'HS256')
