@@ -22,7 +22,7 @@ class User(db.Model):
 @app.route("/login", methods=['POST'])
 def login():
     userinfo = request.json
-    user = User.query.filter(user.name == userid).first
+    user = User.query.filter(User.name == userid).first
     userid = userinfo['name']
     password = userinfo['password']
     
