@@ -24,7 +24,7 @@ def login():
     userinfo = request.json
     userid = userinfo['name']
     password = userinfo['password']
-    user = User.query.filter(User.name == userid).first
+    user = User.query.filter(User.name == userid)
     
     if user.name == userid and user.password == password:
         return jsonify("Token")
