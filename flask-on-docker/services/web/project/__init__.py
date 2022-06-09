@@ -40,7 +40,7 @@ def login():
         token = jwt.encode(payload, app.config['SECRET'], 'HS256')
         
         return jsonify({
-            'access_token' : token.decode('UTF-8')
+            'access_token' : token
         })
     else:
         return '', 401
