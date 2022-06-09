@@ -27,9 +27,10 @@ class User(db.Model):
 @app.route("/login", methods=['POST'])
 def login():
     userinfo = request.json
+    user = User.query.first()
     userid = userinfo['name']
     password = userinfo['password']
-    user = User.query.first()
+    
     
     if user.name == userid and user.password == password:
         return jsonify('token')
