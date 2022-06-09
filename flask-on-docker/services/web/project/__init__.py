@@ -31,18 +31,5 @@ def login():
     userid = userinfo['name']
     password = userinfo['password']
     
-    
     if user.name == userid and user.password == password:
-        #return jsonify('token')
-        user_id = user.id
-        payload = {
-            'user_id' : user.id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        }
-        token = jwt.encode(payload, 'JWT_SECRET_KEY', 'HS256')
-        
-        return jsonify({
-            'user_id' : user_id,
-            'payload' : payload,
-            'token' : token.decode('UTF-8')
-        })
+        return jsonify("token")
