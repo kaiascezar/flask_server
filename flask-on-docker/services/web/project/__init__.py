@@ -44,5 +44,6 @@ def login():
         return jsonify({
             'user_id' : user_id,
             'payload' : payload,
-            'token' : token
+            'type' : type(token)
+#            'token' : token.decode('UTF-8')
         })
