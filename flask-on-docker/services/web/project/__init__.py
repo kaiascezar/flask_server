@@ -32,6 +32,6 @@ def login():
     password = userinfo['password']
     
     if user.name == userid and user.password == password:
-        return jsonify("token")
+        return jsonify("Access_token")
     else:
         return 'id/password is wrong', 401
