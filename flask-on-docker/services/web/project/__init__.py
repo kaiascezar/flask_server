@@ -17,6 +17,9 @@ class User(db.Model):
     def __init__(self, name, password):
         self.name = name
         self.password = password
+    
+    def __repr__(self):
+        return f'<Person ID: {self.id}, name: {self.name}>'
 
 
 @app.route("/login", methods=['POST'])
