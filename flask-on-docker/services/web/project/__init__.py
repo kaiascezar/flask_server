@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, timedelta
 
 
 app = Flask(__name__)
@@ -30,4 +31,15 @@ def login():
     user = User.query.first()
     
     if user.name == userid and user.password == password:
-        return jsonify("Token")
+        userid = userinfo['name']
+        payload = {
+            'userid' : userid,
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        }
+        token = jwt.encode(payload, app.config['SECRET'], 'HS256')
+        
+        return jsonify({
+            'access_token' : token.decode('UTF-8')
+        })
+    else:
+        return '', 401
