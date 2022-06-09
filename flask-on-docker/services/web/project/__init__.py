@@ -41,5 +41,3 @@ def login():
         return jsonify({
             'access_token' : token
         })
-    else:
-        return '', 401
