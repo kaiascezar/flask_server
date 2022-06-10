@@ -48,7 +48,7 @@ def login():
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     
-    result = db.session.query(User).filter(User.name==id, User.password==pw_hash).first()
+    result = db.session.query(User).filter(User.name.like(id), User.password.like(pw_hash)).first()
     
     if result is not None:
         payload = {
