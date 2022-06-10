@@ -87,7 +87,7 @@ def login():
     if result is not None:
         payload = {
             'id' : id,
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+            'exp' : datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
         }
         #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
     
