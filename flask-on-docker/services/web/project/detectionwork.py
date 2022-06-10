@@ -13,7 +13,7 @@ class GtnOcr():
         return '.' in filename and filename.rsplit('.', 1)[1].lower() in GtnOcr.ALLOWED_EXTENSIONS
   
     # 인식 텍스트 좌표값 추출 함수 / ocr결과, 값저장 사전, 검증 리스트1, 검증 리스트2, 검증 리스트3, 카운팅 변수1, 카운팅 변수2
-    def get_coordinate(result, dict1, list1, list2, list3, cnt1, cnt2):
+    def get_coordinate(result, str1, dict1, list1, list2, list3, cnt1, cnt2):
         # bounding box 좌표, 텍스트, 검증(1에 가까울수록 정확도 높음)
         # KITTY, VOC 형식
         for (bbox, text, prob) in result:
@@ -25,13 +25,13 @@ class GtnOcr():
             bl = (int(bl[0]), int(bl[1]))
 
             if Recognition.is_idcard(text, list1):
-                dict1.update({"tag": "idcard"})
+                str1 = "idcard"
 
             if Recognition.is_license(text, list2):
-                dict1.update({"tag": "license"})
+                str1 = "license"
 
             if Recognition.is_registration(text, list3):
-                dict1.update({"tag": "registration"})
+                str1 = "registration"
 
             if Recognition.jumin_check(text):
                 cnt1 += 1
@@ -41,7 +41,7 @@ class GtnOcr():
                 cnt2 += 1
                 dict1.update({"license {}".format(cnt2): [{'x': tl[0], 'y':tl[1]}, {'x': br[0], 'y':br[1]}]})
 
-        return dict1
+        return str1, dict1
 
 
 # OpenCV 관련
