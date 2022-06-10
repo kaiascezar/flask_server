@@ -35,7 +35,9 @@ RUN addgroup --system app && adduser --system --group app
 
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
+ENV OCR_HOME=/home/app/.EasyOCR
 RUN mkdir $APP_HOME
+RUN mkdir $OCR_HOME
 WORKDIR $APP_HOME
 
 
@@ -51,6 +53,7 @@ COPY ./entrypoint.prod.sh $APP_HOME
 COPY . $APP_HOME
 
 RUN chown -R app:app $APP_HOME
+RUN chown -R app:app $OCR_HOME
 
 USER app
 
