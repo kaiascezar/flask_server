@@ -64,7 +64,7 @@ def login():
     #        "msg": "계정 정보가 일치하지 않습니다."
     #    })
     #
-    result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    result = db.session.execute("SELECT name, password from users").fetchone()
     
 #    if result is not None:
 #        payload = {
