@@ -1,10 +1,15 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
-# from datetime import datetime, timedelta
-from project.detectionwork import GtnOcr
+from sqlalchemy import and_, text
+from datetime import datetime, timedelta
+from project.detectionwork import GtnOcr, PreProcessing
+import bcrypt
+import jwt
+import hashlib
 
 
 app = Flask(__name__)
+token_secretkey = 'SECRET_KEY'
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
@@ -24,26 +29,54 @@ class User(db.Model):
         return f'<Person ID: {self.id}, name: {self.name}>'
 
 
-
+@app.route('/register', methods=['POST'])
+def register():
+    id = request.json['id']
+    pw = request.json['pw']
+    
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    
+    db.session.add(User(name=id, password=pw_hash))
+    db.session.commit()
+    
+    return jsonify({
+        'result':'Success'
+    })
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    userinfo = request.get_json() # request.json
-    user = User.query.first()
-    userid = userinfo.get('name') # userinfo['name']
-    password = userinfo.get('password') # userinfo['password']
+    id = request.form['name']
+    pw = request.form['password']
     
-    if user.name == userid and user.password == password:
-        return jsonify({
-            "result": 1,
-            "access_token": "access_token"
-        })
-    else:
-        return jsonify({
-            "result": 0,
-            "msg": "계정 정보가 일치하지 않습니다."
-        })
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    result = db.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    
+    if result is not None:
+        payload = {
+            'id' : id,
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+        }
+    
+    return jsonify({
+        'id' : id,
+        'pw' : pw,
+        'pw_hash' : pw_hash
+    #    'result' : result
+    })
+    
+#    
+#    
+#    if result is not None:
+#        payload = {
+#            'id' : id,
+#            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+#        }
+#        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
+#    
+#        return jsonify({'result':'Success' 'token'})
+#    else:
+#        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
