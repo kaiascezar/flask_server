@@ -53,7 +53,10 @@ def login():
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     
     if User.query.first(User.name==id) and User.query.first(User.password==pw_hash):
-        return jsonify("Token")
+        return jsonify({
+            "result": 1,
+            "access_token": "token"
+        })
     #result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
 #    if result is not None:
