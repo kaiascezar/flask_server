@@ -50,21 +50,21 @@ def login():
     id = auth['id']
     pw = auth['pw']
     
-    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    
-    #if User.query.first(User.name==id) and User.query.first(User.password==pw_hash):
-    if id == "msg7883" and pw == "test1234!":
-        return jsonify({
-            "result": 1,
-            "access_token": "token"
-        })
-    else:
-        return jsonify({
-            "result": 0,
-            "msg": "계정 정보가 일치하지 않습니다."
-        })
-    
-    #result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+
+
+    #if id == "msg7883" and pw == "test1234!":
+    #    return jsonify({
+    #        "result": 1,
+    #        "access_token": "token"
+    #    })
+    #else:
+    #    return jsonify({
+    #        "result": 0,
+    #        "msg": "계정 정보가 일치하지 않습니다."
+    #    })
+    #
+    result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
 #    if result is not None:
 #        payload = {
@@ -84,16 +84,16 @@ def login():
 #    
 #    
 #    
-#    if result is not None:
-#        payload = {
-#            'id' : id,
-#            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-#        }
-#        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
-#    
-#        return jsonify({'result':'Success' 'token'})
-#    else:
-#        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+    if result is not None:
+        payload = {
+            'id' : id,
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+        }
+        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
+    
+        return jsonify({'result':'Success' 'token'})
+    else:
+        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
