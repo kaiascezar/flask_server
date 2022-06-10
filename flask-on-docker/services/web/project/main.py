@@ -29,15 +29,21 @@ class User(db.Model):
 
 @app.route("/login", methods=['POST'])
 def login():
-    userinfo = request.json
+    userinfo = request.get_json() # request.json
     user = User.query.first()
-    userid = userinfo['name']
-    password = userinfo['password']
+    userid = userinfo.get('name') # userinfo['name']
+    password = userinfo.get('password') # userinfo['password']
     
     if user.name == userid and user.password == password:
-        return jsonify("Access_token")
+        return jsonify({
+            "result": 1,
+            "access_token": "access_token"
+        })
     else:
-        return 'id/password is wrong', 401
+        return jsonify({
+            "result": 0,
+            "msg": "계정 정보가 일치하지 않습니다."
+        })
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
