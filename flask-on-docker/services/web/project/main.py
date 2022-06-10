@@ -47,19 +47,24 @@ def login():
     pw = request.json['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    return jsonify({
+        'id' : id,
+        'pw' : pw,
+        'pw_hash' : pw_hash
+    })
     
-    result = db.session.query(User).filter(User.name.like(id), User.password.like(pw_hash)).first()
-    
-    if result is not None:
-        payload = {
-            'id' : id,
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-        }
-        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
-    
-        return jsonify({'result':'Success' 'token'})
-    else:
-        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+#    result = db.session.query(User).filter(User.name.like(id), User.password.like(pw_hash)).first()
+#    
+#    if result is not None:
+#        payload = {
+#            'id' : id,
+#            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+#        }
+#        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
+#    
+#        return jsonify({'result':'Success' 'token'})
+#    else:
+#        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
