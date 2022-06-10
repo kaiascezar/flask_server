@@ -50,8 +50,7 @@ def login():
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     result = db.session.query(User).from_statement(
-                                    "SELECT name, password from users WHERE name=:name").\
-                                    params(name=id).all()
+                                    "SELECT name, password from users").all()
     
     
     return jsonify({
