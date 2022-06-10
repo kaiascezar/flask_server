@@ -50,7 +50,7 @@ def login():
     pw = request.json['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    result = User.query.filter(User.name == id).all()
+    result = User.query.first(User.name == id)
     
     return jsonify({
         'id' : id,
