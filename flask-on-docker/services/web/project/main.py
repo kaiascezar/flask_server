@@ -46,13 +46,14 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    id = request.json['id']
-    pw = request.json['pw']
+    auth = request.json
+    id = auth['id']
+    pw = auth['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     
     if User.query.first(User.name==id) and User.query.first(User.password==pw_hash):
-        return {"Token"}
+        return jsonify("Token")
     #result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
 #    if result is not None:
