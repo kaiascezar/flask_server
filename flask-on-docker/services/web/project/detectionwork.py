@@ -45,15 +45,15 @@ class GtnOcr():
 
 
 # OpenCV 관련
-class PreProcessing():
-    block_size = 13                 # 블럭 사이즈(이미지의 등분)
-    C = 7                           # 차감 상수
-
-    # 적응형 thresholding - 이진화 및 음영 제거
-    def adapted_th(image):
-        origin = cv2.imread(image, cv2.IMREAD_COLOR)
-        gray = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
-        th_ad = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, PreProcessing.block_size, PreProcessing.C)
-        result = cv2.cvtColor(th_ad, cv2.COLOR_BGR2RGB)
-
-        return result
+#class PreProcessing():
+#    block_size = 13                 # 블럭 사이즈(이미지의 등분)
+#    C = 7                           # 차감 상수
+#
+#    # 적응형 thresholding - 이진화 및 음영 제거
+#    def adapted_th(image):
+#        origin = cv2.imread(image, cv2.IMREAD_COLOR)
+#        gray = cv2.cvtColor(origin, cv2.COLOR_BGR2RGB)
+#        th_ad = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, PreProcessing.block_size, PreProcessing.C)
+#        result = cv2.cvtColor(th_ad, cv2.COLOR_BGR2RGB)
+#
+#        return result
