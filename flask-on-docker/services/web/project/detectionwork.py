@@ -10,7 +10,7 @@ class GtnOcr():
     
     # 파일 확장자 검증 함수
     def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in EasyOcr.ALLOWED_EXTENSIONS
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in GtnOcr.ALLOWED_EXTENSIONS
   
     # 인식 텍스트 좌표값 추출 함수 / ocr결과, 값저장 사전, 검증 리스트1, 검증 리스트2, 검증 리스트3, 카운팅 변수1, 카운팅 변수2
     def get_coordinate(result, dict1, list1, list2, list3, cnt1, cnt2):
