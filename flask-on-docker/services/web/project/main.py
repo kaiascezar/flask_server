@@ -24,8 +24,10 @@ class User(db.Model):
     def __init__(self, name, password):
         self.name = name
         self.password = password
+        
     
 
+        
 
 @app.route('/register', methods=['POST'])
 def register():
@@ -48,21 +50,27 @@ def login():
     pw = request.json['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    
+    if User.query.first(User.name==id) and User.query.first(User.password==pw_hash):
+        return {"Token"}
+    #result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
 #    if result is not None:
 #        payload = {
 #            'id' : id,
 #            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
 #        }
-    
-    return jsonify({
-        'id' : id,
-        'pw' : pw,
-        'pw_hash' : pw_hash,
-        'result' : result
-    })
-    
+#        token = "token"
+#        
+#        return jsonify({'result':'Success'})
+            
+#    return jsonify({
+#        'id' : id,
+#        'pw' : pw,
+#        'pw_hash' : pw_hash,
+#        'result' : result
+#    })
+#    
 #    
 #    
 #    if result is not None:
