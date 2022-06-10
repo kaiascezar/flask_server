@@ -25,8 +25,6 @@ class User(db.Model):
         self.name = name
         self.password = password
     
-    def __repr__(self):
-        return f'<id: {self.name}, pw: {self.password}>'
 
 
 @app.route('/register', methods=['POST'])
