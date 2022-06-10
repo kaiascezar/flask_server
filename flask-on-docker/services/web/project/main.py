@@ -52,11 +52,17 @@ def login():
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     result = db.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
+    if result is not None:
+        payload = {
+            'id' : id,
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+        }
+    
     return jsonify({
         'id' : id,
         'pw' : pw,
         'pw_hash' : pw_hash,
-        'result' : result
+    #    'result' : result
     })
     
 #    
