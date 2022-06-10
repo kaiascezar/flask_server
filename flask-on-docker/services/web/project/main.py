@@ -89,7 +89,7 @@ def login():
             'id' : id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
-        token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
+        token = jwt.encode(payload, token_secretkey, 'HS256')
     
         return jsonify({
             'result':'Success',
