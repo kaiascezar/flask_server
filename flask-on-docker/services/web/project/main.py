@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import and_
 from datetime import datetime, timedelta
 from project.detectionwork import GtnOcr, PreProcessing
 import bcrypt
@@ -49,13 +50,14 @@ def login():
     pw = request.json['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    #result = db.select(User).where(User.name == id & User.password == pw_hash)
+    result = User.query.filter(and_(User.name == id,
+                                    User.password == pw_hash)).all()
     
     return jsonify({
         'id' : id,
         'pw' : pw,
         'pw_hash' : pw_hash,
-    #    'result' : result
+        'result' : result
     })
     
 #    
