@@ -2,9 +2,13 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 from project.detectionwork import GtnOcr, PreProcessing
+import bcrypt
+import jwt
+import hashlib
 
 
 app = Flask(__name__)
+token_secretkey = 'SECRET_KEY'
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
@@ -24,26 +28,38 @@ class User(db.Model):
         return f'<Person ID: {self.id}, name: {self.name}>'
 
 
-
+@app.route('/register', methods=['POST'])
+def register():
+    id = request.json['id']
+    pw = request.json['pw']
+    
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    
+    db.session.add(User(name=id, password=pw_hash))
+    db.session.commit()
+    
+    return jsonify({'result':'Success'})
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    userinfo = request.get_json() # request.json
-    user = User.query.first()
-    userid = userinfo.get('id') # userinfo['name']
-    password = userinfo.get('pw') # userinfo['password']
+    id = request.json['id']
+    pw = request.json['pw']
     
-    if user.name == userid and user.password == password:
-        return jsonify({
-            "result": 1,
-            "access_token": "access_token"
-        })
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    
+    result = User.query.filter(User.name==id, User.password==pw_hash).first()
+    
+    if result is not None:
+        payload = {
+            'id' : id,
+            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+        }
+        token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
+    
+        return jsonify({'result':'Success', 'token': token})
     else:
-        return jsonify({
-            "result": 0,
-            "msg": "계정 정보가 일치하지 않습니다."
-        })
+        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
