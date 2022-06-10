@@ -1,5 +1,5 @@
 import easyocr
-import cv2
+#import cv2
 from algorithm import Recognition                 # 개인정보 탐지 알고리즘 관련
 
 
