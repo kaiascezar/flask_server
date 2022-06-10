@@ -49,13 +49,13 @@ def login():
     pw = request.json['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    result = db.select(User).where(User.name == id & User.password == pw_hash)
+    #result = db.select(User).where(User.name == id & User.password == pw_hash)
     
     return jsonify({
         'id' : id,
         'pw' : pw,
         'pw_hash' : pw_hash,
-        'result' : result
+    #    'result' : result
     })
     
 #    
