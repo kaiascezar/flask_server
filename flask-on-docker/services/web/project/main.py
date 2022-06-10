@@ -61,7 +61,7 @@ def login():
     return jsonify({
         'id' : id,
         'pw' : pw,
-        'pw_hash' : pw_hash,
+        'pw_hash' : pw_hash
     #    'result' : result
     })
     
