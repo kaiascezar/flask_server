@@ -26,7 +26,7 @@ class User(db.Model):
         self.password = password
     
     def __repr__(self):
-        return f'<Person ID: {self.id}, name: {self.name}>'
+        return f'<id: {self.name}, pw: {self.password}>'
 
 
 @app.route('/register', methods=['POST'])
@@ -52,17 +52,17 @@ def login():
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
-    if result is not None:
-        payload = {
-            'id' : id,
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-        }
+#    if result is not None:
+#        payload = {
+#            'id' : id,
+#            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+#        }
     
     return jsonify({
         'id' : id,
         'pw' : pw,
-        'pw_hash' : pw_hash
-    #    'result' : result
+        'pw_hash' : pw_hash,
+        'result' : result
     })
     
 #    
