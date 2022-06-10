@@ -44,8 +44,8 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    id = request.form['name']
-    pw = request.form['password']
+    id = request.form['id']
+    pw = request.form['pw']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
     result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
