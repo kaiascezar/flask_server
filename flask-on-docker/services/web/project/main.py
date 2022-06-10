@@ -31,8 +31,8 @@ class User(db.Model):
 def login():
     userinfo = request.get_json() # request.json
     user = User.query.first()
-    userid = userinfo.get('name') # userinfo['name']
-    password = userinfo.get('password') # userinfo['password']
+    userid = userinfo.get('id') # userinfo['name']
+    password = userinfo.get('pw') # userinfo['password']
     
     if user.name == userid and user.password == password:
         return jsonify({
