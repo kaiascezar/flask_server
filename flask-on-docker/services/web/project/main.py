@@ -91,7 +91,10 @@ def login():
         }
         token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
     
-        return jsonify({'result':'Success' 'token'})
+        return jsonify({
+            'result':'Success',
+            'token': token
+            })
     else:
         return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
     
