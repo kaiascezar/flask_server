@@ -50,7 +50,7 @@ def login():
     pw = request.form['password']
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    result = db.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    result = db.session.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
     
     if result is not None:
         payload = {
