@@ -25,14 +25,14 @@ class User(db.Model):
         self.name = name
         self.password = password
         
-def get_user_id_password(name):
-    row = User.query.filter(User.name==name).first()
-    
-    
-    return{
-        'id' : row['id'],
-        'pw' : row['password']
-    } if row else None
+# def get_user_id_password(id):
+    # row = User.query.filter(User.name==id).first()
+    # 
+    # 
+    # return{
+        # 'id' : row['id'],
+        # 'pw' : row['password']
+    # } if row else None
 
         
 
@@ -53,25 +53,25 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    auth = request.json
+    auth = request.form
     id = auth['id']
     pw = auth['pw']
-    user_auth = get_user_id_password(id)
+    user_auth = db.session.query.filter(User.name==id).first()
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
-#     #if id == "msg7883" and pw == "test1234!":
-#     #    return jsonify({
-#     #        "result": 1,
-#     #        "access_token": "token"
-#     #    })
-#     #else:
-#     #    return jsonify({
-#     #        "result": 0,
-#     #        "msg": "계정 정보가 일치하지 않습니다."
-#     #    })
-#     #
+    # if id == "msg7883" and pw == "test1234!":
+        # return jsonify({
+            # "result": 1,
+            # "access_token": "token"
+        # })
+    # else:
+        # return jsonify({
+            # "result": 0,
+            # "msg": "계정 정보가 일치하지 않습니다."
+        # })
+    # 
     if user_auth and bcrypt.checkpw(pw, pw_hash):
         user_id = user_auth['id']
         payload = {
