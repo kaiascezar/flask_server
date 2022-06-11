@@ -25,7 +25,19 @@ class User(db.Model):
         self.name = name
         self.password = password
         
+def get_user_id_password(name):
+    row = db.session.execute(text("""
+        SELECT
+        id,
+        password
+        FROM users
+        Where name = :name
+    """), {'id', name}).fetchone()
     
+    return{
+        'id' : row['id'],
+        'pw' : row['password']
+    } if row else None
 
         
 
@@ -49,6 +61,7 @@ def login():
     auth = request.json
     id = auth['id']
     pw = auth['pw']
+    user_auth = get_user_id_password(id)
     
     pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
@@ -64,8 +77,20 @@ def login():
     #        "msg": "계정 정보가 일치하지 않습니다."
     #    })
     #
-    result = db.session.execute("SELECT name, password from users").fetchone()
+    if user_auth and bcrypt.checkpw(pw, pw_hash):
+        user_id = user_auth['id']
+        payload = {
+            'id' : user_id,
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        }
+        token = jwt.encode(payload, token_secretkey, 'HS256')
     
+        return jsonify({
+            'result':'Success',
+            'token': token
+            })
+    else:
+        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
 #    if result is not None:
 #        payload = {
 #            'id' : id,
@@ -84,19 +109,8 @@ def login():
 #    
 #    
 #    
-    if result is not None:
-        payload = {
-            'id' : id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        }
-        token = jwt.encode(payload, token_secretkey, 'HS256')
     
-        return jsonify({
-            'result':'Success',
-            'token': token
-            })
-    else:
-        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
