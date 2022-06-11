@@ -78,7 +78,7 @@ def login():
             # "msg": "계정 정보가 일치하지 않습니다."
         # })
     # 
-    if user_auth and bcrypt.checkpw(User.password, pw_hash):
+    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['password'].encode('UTF-8')):
     #if id == 'msg7883' and pw == 'test1234!':
         user_id = user_auth['id']
         payload = {
