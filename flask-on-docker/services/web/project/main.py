@@ -25,6 +25,35 @@ class User(db.Model):
         self.name = name
         self.password = password
         
+def insert_user(user):
+    return db.session.execute(text("""
+        INSERT INTO users(
+            name,
+            password
+        ) VALUES(
+            :name,
+            :password
+        )
+        """), user).lastrowid 
+
+def get_user(user_id):
+    user = db.session.execute(text("""
+        SELECT
+            id,
+            name,
+            password
+        FROM users
+        WHERE id = :user_id
+        """), {
+            'user_id' : user_id
+        }).fetchone()
+    
+    return {
+        'id' : user['id'],
+        'name' : user['name']
+    } if user else None
+
+       
 def get_user_id_password(id):
     row = db.session.execute(text("""
         SELECT
@@ -44,17 +73,23 @@ def get_user_id_password(id):
 
 @app.route('/register', methods=['POST'])
 def register():
-    id = request.json['id']
-    pw = request.json['pw']
+    new_user = request.json
+    new_user['pw'] = bcrypt.hashpw(
+        new_user['password'].encode('UTF-8'),
+        bcrypt.gensalt()
+    )
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    new_user_id = insert_user(new_user)
+    new_user = get_user(new_user_id)
     
-    db.session.add(User(name=id, password=pw_hash))
-    db.session.commit()
+    return jsonify(new_user)
     
-    return jsonify({
-        'result':'Success'
-    })
+    # db.session.add(User(name=id, password=))
+    # db.session.commit()
+    # 
+    # return jsonify({
+        # 'result':'Success'
+    # })
 
 
 @app.route("/login", methods=['POST'])
