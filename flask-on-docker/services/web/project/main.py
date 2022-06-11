@@ -28,9 +28,11 @@ class User(db.Model):
 def insert_user(user):
     return db.session.execute(text("""
         INSERT INTO users(
+            id,
             name,
             password
         ) VALUES(
+            :id,
             :name,
             :password
         )
