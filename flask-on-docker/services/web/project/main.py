@@ -197,19 +197,19 @@ def ocr():
             parsed = GtnOcr.reader.readtext(file.read())
             contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt))
             # 개인정보 탐지 내용이 없을 경우
-            if contents[1] == {}:
+            if contents[1] == []:
                 return jsonify({
                     "result": 0,
                     "msg": "No Contents",
-                    "tag": contents[0],
-                    "count": contents[2],
-                    "data": contents[1]
+                    "tag": "",
+                    "count": 0,
+                    "data": []
                 })
             # 개인정보 탐지 내용이 있을 경우
             else:
                 return jsonify({
                     "result": 1,
-                    "msg:": None,
+                    "msg:": "",
                     "tag": contents[0],
                     "count": contents[2],
                     "data": contents[1]
