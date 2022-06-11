@@ -24,6 +24,9 @@ class User(db.Model):
     def __init__(self, name, password):
         self.name = name
         self.password = password
+    
+    def __repr__(self):
+        return '%r' % self.name
         
 def insert_user(user):
     return db.session.execute(text("""
