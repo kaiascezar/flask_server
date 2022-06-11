@@ -53,9 +53,9 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    auth = request.form
-    id = auth['id']
-    pw = auth['pw']
+#    auth = request.
+    id = request.form['id']
+    pw = request.form['pw']
     #user_auth = db.session.query.filter(User.name==id).first()
     
     #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
