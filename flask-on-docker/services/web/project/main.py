@@ -99,7 +99,7 @@ def login():
     
     
 #    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
-    if id == 'msg7883' and pw == 'test1234!':
+    if id == "msg7883" and pw == "test1234!":
 #        user_id = user_auth['id']
 #        payload = {
 #            'id' : user_id,
@@ -108,11 +108,14 @@ def login():
         # token = jwt.encode(payload, token_secretkey, 'HS256')
     # 
         return jsonify({
-            'result':'Success',
-            'access_token': 'token'
+            "result": 1,
+            "access_token": "token"
             })
     else:
-        return jsonify({'result': 0, 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        return jsonify({
+            "result": 0,
+            "msg": "계정 정보가 일치하지 않습니다."
+        })
 
     
     
@@ -121,11 +124,11 @@ def get_key():
     pass
     auth_token = request.form()
     # 인증 성공 - 토큰 일치
-    if auth_token['access_token'] == 'token':
+    if auth_token['access_token'] == "token":
         return jsonify({
             "result": 1,
             "decry_key": 'kkkkkkkkkkkkkkkk',
-            'iv' : 'iviviviviviviviv'
+            "iv" : "iviviviviviviviv"
         })
     # 인증 실패 - 토큰 불일치
     else:
@@ -150,7 +153,7 @@ def ocr():
         if file and GtnOcr.allowed_file(file.filename):
             # 검증에 필요한 자료구조 및 변수
             tag = str()
-            coordinate = dict()
+            coordinate = list()
             verif_idcard = list(0 for i in range(0, 5))
             verif_license = list(0 for i in range(0, 5))
             verif_regist = list(0 for i in range(0, 9))
@@ -160,56 +163,33 @@ def ocr():
             parsed = GtnOcr.reader.readtext(file.read())
             contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt))
             # 개인정보 탐지 내용이 없을 경우
-            if contents == {}:
+            if contents[1] == []:
                 return jsonify({
                     "result": 0,
-                    "msg": "No Contents"
+                    "msg": "No Contents",
+                    "tag": "",
+                    "count": 0,
+                    "data": []
                 })
             # 개인정보 탐지 내용이 있을 경우
             else:
-                return {
+                return jsonify({
                     "result": 1,
+                    "msg": "",
                     "tag": contents[0],
+                    "count": contents[2],
                     "data": contents[1]
-                }
+                })
         # 파일 형식이 허용되지 않을 경우
         else:
             return jsonify({
                 "result": 0,
                 "msg": "허용되지 않는 파일 형식입니다."
             }), 403
-    # POST 의외의 방식 방지
+    # POST 의외의 접근 방식 방지
     else:
         return jsonify({
             "result": 0,
             "msg": "허용되지 않은 접근입니다."
         }), 403
 
-
-# from flask import Flask
-# from flask import request
-# import json
-# 
-# app = Flask(__name__)
-# 
-# @app.route("/login",  methods = ['POST'])
-# def hello():
-    # print(request.get_json())
-    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-# 
-# @app.route("/login2",  methods = ['POST'])
-# def hello2():
-    # print(request.get_json())
-    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-# 
-# @app.route("/login3", methods=['POST'])
-# def login():
-    # auth = request.json
-    # id = auth['id']
-    # pw = auth['pw']
-    # print(id, pw)
-    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
-# 
-# 
-# if __name__ == "__main__":
-    # app.run(host='0.0.0.0', port=1337)
