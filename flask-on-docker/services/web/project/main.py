@@ -26,13 +26,13 @@ class User(db.Model):
         self.password = password
         
 def get_user_id_password(name):
-    row = db.session.execute(text("""
+    row = db.session.execute("""
         SELECT
         id,
         password
         FROM users
         Where name = :name
-    """), {'id', name}).fetchone()
+    """, {'id', name}).fetchone()
     
     return{
         'id' : row['id'],
