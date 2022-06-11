@@ -99,7 +99,7 @@ def login():
     pw = auth['pw']
     user_auth = get_user_id_password(id)
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
     # if id == "msg7883" and pw == "test1234!":
