@@ -101,39 +101,38 @@ def login():
 #    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
     if id == 'msg7883' and pw == 'test1234!':
 #        user_id = user_auth['id']
-        payload = {
+#        payload = {
 #            'id' : user_id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        }
-        token = jwt.encode(payload, token_secretkey, 'HS256')
-    
+            # 'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        # }
+        # token = jwt.encode(payload, token_secretkey, 'HS256')
+    # 
         return jsonify({
             'result':'Success',
-            'token': token
+            'access_token': 'token'
             })
     else:
-        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        return jsonify({'result': 0, 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
 
-    
-        
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
 def get_key():
     pass
-#    auth_token = request.get_json()
-#    # 인증 성공 - 토큰 일치
-#    if auth_token.get('access_token') == GtnServer.access_token:
-#        return jsonify({
-#            "result": 1,
-#            "decry_key": GtnServer.decry_key
-#        })
-#    # 인증 실패 - 토큰 불일치
-#    else:
-#        return {
-#            "result": 0,
-#            "msg": "권한이 없는 요청입니다."
-#        }, 401
+    auth_token = request.form()
+    # 인증 성공 - 토큰 일치
+    if auth_token['access_token'] == 'token':
+        return jsonify({
+            "result": 1,
+            "decry_key": 'kkkkkkkkkkkkkkkk',
+            'iv' : 'iviviviviviviviv'
+        })
+    # 인증 실패 - 토큰 불일치
+    else:
+        return {
+            "result": 0,
+            "msg": "권한이 없는 요청입니다."
+        }, 401
 
 
 @app.route('/ocr', methods=['POST'])
