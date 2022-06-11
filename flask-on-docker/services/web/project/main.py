@@ -94,40 +94,40 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    auth = request.json
+    auth = request.form
     id = auth['id']
     pw = auth['pw']
-    user_auth = get_user_id_password(id)
+    #user_auth = get_user_id_password(id)
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
-    # if id == "msg7883" and pw == "test1234!":
-        # return jsonify({
-            # "result": 1,
-            # "access_token": "token"
-        # })
-    # else:
-        # return jsonify({
-            # "result": 0,
-            # "msg": "계정 정보가 일치하지 않습니다."
-        # })
-    # 
-    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
-    #if id == 'msg7883' and pw == 'test1234!':
-        user_id = user_auth['id']
-        payload = {
-            'id' : user_id,
-            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        }
-        token = jwt.encode(payload, token_secretkey, 'HS256')
-    
+    if id == "msg7883" and pw == "test1234!":
         return jsonify({
-            'result':'Success',
-            'token': token
-            })
+            "result": 1,
+            "access_token": "token"
+        })
     else:
-        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        return jsonify({
+            "result": 0,
+            "msg": "계정 정보가 일치하지 않습니다."
+        })
+    # 
+    #if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
+    #if id == 'msg7883' and pw == 'test1234!':
+        # user_id = user_auth['id']
+        # payload = {
+            # 'id' : user_id,
+            # 'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        # }
+        # token = jwt.encode(payload, token_secretkey, 'HS256')
+    # 
+        # return jsonify({
+            # 'result':'Success',
+            # 'token': token
+            # })
+    # else:
+        # return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
 
  #    if result is not None:
 # #        payload = {
