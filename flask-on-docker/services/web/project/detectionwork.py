@@ -35,12 +35,12 @@ class GtnOcr():
 
             if Recognition.jumin_check(text):
                 cnt1 += 1
-                list1.append(({'x': tl[0], 'y': tl[1]}, {'x': br[0], 'y': br[1]}))
+                list1.append({'x1': tl[0], 'y1': tl[1], 'x2': br[0], 'y2': br[1]})
                 # dict1.update({"jumin {}".format(cnt1): [{'x': tl[0], 'y':tl[1]}, {'x': br[0], 'y':br[1]}]})
 
             if Recognition.licensenum_check(text):
                 cnt2 += 1
-                list1.append(({'x': tl[0], 'y': tl[1]}, {'x': br[0], 'y': br[1]}))
+                list1.append({'x1': tl[0], 'y1': tl[1], 'x2': br[0], 'y2': br[1]})
                 # dict1.update({"license {}".format(cnt2): [{'x': tl[0], 'y':tl[1]}, {'x': br[0], 'y':br[1]}]})
 
         return str1, list1, cnt1+cnt2
