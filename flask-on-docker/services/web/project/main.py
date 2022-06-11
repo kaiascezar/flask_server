@@ -186,7 +186,8 @@ def ocr():
         if file and GtnOcr.allowed_file(file.filename):
             # 검증에 필요한 자료구조 및 변수
             tag = str()
-            coordinate = dict()
+            # coordinate = dict()
+            coordinate = list()
             verif_idcard = list(0 for i in range(0, 5))
             verif_license = list(0 for i in range(0, 5))
             verif_regist = list(0 for i in range(0, 9))
@@ -196,18 +197,23 @@ def ocr():
             parsed = GtnOcr.reader.readtext(file.read())
             contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt))
             # 개인정보 탐지 내용이 없을 경우
-            if contents == {}:
+            if contents[1] == {}:
                 return jsonify({
                     "result": 0,
-                    "msg": "No Contents"
+                    "msg": "No Contents",
+                    "tag": contents[0],
+                    "count": contents[2],
+                    "data": contents[1]
                 })
             # 개인정보 탐지 내용이 있을 경우
             else:
-                return {
+                return jsonify({
                     "result": 1,
+                    "msg:": None,
                     "tag": contents[0],
+                    "count": contents[2],
                     "data": contents[1]
-                }
+                })
         # 파일 형식이 허용되지 않을 경우
         else:
             return jsonify({
