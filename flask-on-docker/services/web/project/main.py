@@ -24,79 +24,151 @@ class User(db.Model):
     def __init__(self, name, password):
         self.name = name
         self.password = password
-    
-    def __repr__(self):
-        return f'<Person ID: {self.id}, name: {self.name}>'
+        
+def insert_user(user):
+    return db.session.execute(text("""
+        INSERT INTO users(
+            name,
+            password
+        ) VALUES(
+            :name,
+            :password
+        )
+        """), user).lastrowid 
 
+def get_user(user_id):
+    user = db.session.execute(text("""
+        SELECT
+            id,
+            name,
+            password
+        FROM users
+        WHERE id = :user_id
+        """), {
+            'user_id' : user_id
+        }).fetchone()
+    
+    return {
+        'id' : user['id'],
+        'name' : user['name']
+    } if user else None
+
+       
+def get_user_id_password(id):
+    row = db.session.execute(text("""
+        SELECT
+        id,
+        password
+        FROM users
+        WHERE name = :name
+    """), {'name' : id}).fetchone()
+    
+    
+    return{
+        'id' : row['id'],
+        'pw' : row['password']
+    } if row else None
+
+        
 
 @app.route('/register', methods=['POST'])
 def register():
-    id = request.json['id']
-    pw = request.json['pw']
+    new_user = request.json
+    new_user['pw'] = bcrypt.hashpw(
+        new_user['pw'].encode('UTF-8'),
+        bcrypt.gensalt()
+    )
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    new_user_id = insert_user(new_user)
+    new_user = get_user(new_user_id)
     
-    db.session.add(User(name=id, password=pw_hash))
-    db.session.commit()
+    return jsonify(new_user)
     
-    return jsonify({
-        'result':'Success'
-    })
+    # db.session.add(User(name=id, password=))
+    # db.session.commit()
+    # 
+    # return jsonify({
+        # 'result':'Success'
+    # })
 
 
 @app.route("/login", methods=['POST'])
 def login():
-    id = request.form['name']
-    pw = request.form['password']
+    auth = request.form
+    id = auth['id']
+    pw = auth['pw']
+    #user_auth = get_user_id_password(id)
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-    result = db.execute("SELECT name, password from users WHERE name", {'name': id}).fetchone()
+    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+
+
+    if id == "msg7883" and pw == "test1234!":
+        return jsonify({
+            "result": 1,
+            "access_token": "token"
+        })
+    else:
+        return jsonify({
+            "result": 0,
+            "msg": "계정 정보가 일치하지 않습니다."
+        })
+    # 
+    #if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
+    #if id == 'msg7883' and pw == 'test1234!':
+        # user_id = user_auth['id']
+        # payload = {
+            # 'id' : user_id,
+            # 'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        # }
+        # token = jwt.encode(payload, token_secretkey, 'HS256')
+    # 
+        # return jsonify({
+            # 'result':'Success',
+            # 'token': token
+            # })
+    # else:
+        # return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+
+ #    if result is not None:
+# #        payload = {
+# #            'id' : id,
+# #            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
+# #        }
+# #        token = "token"
+# #        
+# #        return jsonify({'result':'Success'})
+            
+# #    return jsonify({
+# #        'id' : id,
+# #        'pw' : pw,
+# #        'pw_hash' : pw_hash,
+# #        'result' : result
+# #    })
+# #    
+# #    
+# #    
     
-    if result is not None:
-        payload = {
-            'id' : id,
-            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-        }
-    
-    return jsonify({
-        'id' : id,
-        'pw' : pw,
-        'pw_hash' : pw_hash
-    #    'result' : result
-    })
-    
-#    
-#    
-#    if result is not None:
-#        payload = {
-#            'id' : id,
-#            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-#        }
-#        #token = jwt.encode(payload, token_secretkey, 'HS256').decode('utf-8')
-#    
-#        return jsonify({'result':'Success' 'token'})
-#    else:
-#        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        
     
     
 @app.route('/decryption', methods=['POST', 'GET'])
 def get_key():
     pass
-#    auth_token = request.get_json()
-#    # 인증 성공 - 토큰 일치
-#    if auth_token.get('access_token') == GtnServer.access_token:
-#        return jsonify({
-#            "result": 1,
-#            "decry_key": GtnServer.decry_key
-#        })
-#    # 인증 실패 - 토큰 불일치
-#    else:
-#        return {
-#            "result": 0,
-#            "msg": "권한이 없는 요청입니다."
-#        }, 401
+# #    auth_token = request.get_json()
+# #    # 인증 성공 - 토큰 일치
+# #    if auth_token.get('access_token') == GtnServer.access_token:
+# #        return jsonify({
+# #            "result": 1,
+# #            "decry_key": GtnServer.decry_key
+# #        })
+# #    # 인증 실패 - 토큰 불일치
+# #    else:
+# #        return {
+# #            "result": 0,
+# #            "msg": "권한이 없는 요청입니다."
+# #        }, 401
 
-# OCR API
+# # OCR API
 
 
 @app.route('/ocr', methods=['POST'])
@@ -148,3 +220,32 @@ def ocr():
             "result": 0,
             "msg": "허용되지 않은 접근입니다."
         }), 403
+
+
+# from flask import Flask
+# from flask import request
+# import json
+# 
+# app = Flask(__name__)
+# 
+# @app.route("/login",  methods = ['POST'])
+# def hello():
+    # print(request.get_json())
+    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+# 
+# @app.route("/login2",  methods = ['POST'])
+# def hello2():
+    # print(request.get_json())
+    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+# 
+# @app.route("/login3", methods=['POST'])
+# def login():
+    # auth = request.json
+    # id = auth['id']
+    # pw = auth['pw']
+    # print(id, pw)
+    # return json.dumps({'success':True}), 200, {'ContentType':'application/json'} 
+# 
+# 
+# if __name__ == "__main__":
+    # app.run(host='0.0.0.0', port=1337)
