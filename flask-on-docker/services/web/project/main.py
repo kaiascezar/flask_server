@@ -75,7 +75,7 @@ def get_user_id_password(id):
 def register():
     new_user = request.json
     new_user['pw'] = bcrypt.hashpw(
-        new_user['password'].encode('UTF-8'),
+        new_user['pw'].encode('UTF-8'),
         bcrypt.gensalt()
     )
     
