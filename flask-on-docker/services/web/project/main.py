@@ -97,37 +97,37 @@ def login():
     auth = request.form
     id = auth['id']
     pw = auth['pw']
-    #user_auth = get_user_id_password(id)
+    user_auth = get_user_id_password(id)
     
-    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
-    if id == "msg7883" and pw == "test1234!":
-        return jsonify({
-            "result": 1,
-            "access_token": "token"
-        })
-    else:
-        return jsonify({
-            "result": 0,
-            "msg": "계정 정보가 일치하지 않습니다."
-        })
-    # 
-    #if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
-    #if id == 'msg7883' and pw == 'test1234!':
-        # user_id = user_auth['id']
-        # payload = {
-            # 'id' : user_id,
-            # 'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        # }
-        # token = jwt.encode(payload, token_secretkey, 'HS256')
-    # 
+    # if id == "msg7883" and pw == "test1234!":
         # return jsonify({
-            # 'result':'Success',
-            # 'token': token
-            # })
+            # "result": 1,
+            # "access_token": "token"
+        # })
     # else:
-        # return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
+        # return jsonify({
+            # "result": 0,
+            # "msg": "계정 정보가 일치하지 않습니다."
+        # })
+    # 
+    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
+#    if id == 'msg7883' and pw == 'test1234!':
+        user_id = user_auth['id']
+        payload = {
+            'id' : user_id,
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        }
+        token = jwt.encode(payload, token_secretkey, 'HS256')
+    
+        return jsonify({
+            'result':'Success',
+            'token': token
+            })
+    else:
+        return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
 
  #    if result is not None:
 # #        payload = {
@@ -154,19 +154,19 @@ def login():
 @app.route('/decryption', methods=['POST', 'GET'])
 def get_key():
     pass
-# #    auth_token = request.get_json()
-# #    # 인증 성공 - 토큰 일치
-# #    if auth_token.get('access_token') == GtnServer.access_token:
-# #        return jsonify({
-# #            "result": 1,
-# #            "decry_key": GtnServer.decry_key
-# #        })
-# #    # 인증 실패 - 토큰 불일치
-# #    else:
-# #        return {
-# #            "result": 0,
-# #            "msg": "권한이 없는 요청입니다."
-# #        }, 401
+#    auth_token = request.get_json()
+#    # 인증 성공 - 토큰 일치
+#    if auth_token.get('access_token') == GtnServer.access_token:
+#        return jsonify({
+#            "result": 1,
+#            "decry_key": GtnServer.decry_key
+#        })
+#    # 인증 실패 - 토큰 불일치
+#    else:
+#        return {
+#            "result": 0,
+#            "msg": "권한이 없는 요청입니다."
+#        }, 401
 
 # # OCR API
 
@@ -186,8 +186,7 @@ def ocr():
         if file and GtnOcr.allowed_file(file.filename):
             # 검증에 필요한 자료구조 및 변수
             tag = str()
-            # coordinate = dict()
-            coordinate = list()
+            coordinate = dict()
             verif_idcard = list(0 for i in range(0, 5))
             verif_license = list(0 for i in range(0, 5))
             verif_regist = list(0 for i in range(0, 9))
@@ -197,23 +196,18 @@ def ocr():
             parsed = GtnOcr.reader.readtext(file.read())
             contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt))
             # 개인정보 탐지 내용이 없을 경우
-            if contents[1] == []:
+            if contents == {}:
                 return jsonify({
                     "result": 0,
-                    "msg": "No Contents",
-                    "tag": "",
-                    "count": 0,
-                    "data": []
+                    "msg": "No Contents"
                 })
             # 개인정보 탐지 내용이 있을 경우
             else:
-                return jsonify({
+                return {
                     "result": 1,
-                    "msg:": "",
                     "tag": contents[0],
-                    "count": contents[2],
                     "data": contents[1]
-                })
+                }
         # 파일 형식이 허용되지 않을 경우
         else:
             return jsonify({
