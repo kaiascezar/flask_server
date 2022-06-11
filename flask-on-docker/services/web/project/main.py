@@ -85,13 +85,6 @@ def register():
     new_user = get_user(new_user_id)
     
     return jsonify(new_user)
-    
-    # db.session.add(User(name=id, password=))
-    # db.session.commit()
-    # 
-    # return jsonify({
-        # 'result':'Success'
-    # })
 
 
 @app.route("/login", methods=['POST'])
@@ -101,20 +94,7 @@ def login():
     pw = auth['pw']
     user_auth = get_user_id_password(id)
     
-    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
-
-
-    # if id == "msg7883" and pw == "test1234!":
-        # return jsonify({
-            # "result": 1,
-            # "access_token": "token"
-        # })
-    # else:
-        # return jsonify({
-            # "result": 0,
-            # "msg": "계정 정보가 일치하지 않습니다."
-        # })
-    # 
+    
     if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
 #    if id == 'msg7883' and pw == 'test1234!':
         user_id = user_auth['id']
@@ -131,24 +111,6 @@ def login():
     else:
         return jsonify({'result': 'fail', 'msg':'아이디/비밀번호가 일치하지 않습니다.'})
 
- #    if result is not None:
-# #        payload = {
-# #            'id' : id,
-# #            'exp' : datetime.datetime.utcnow() + datetime.timedelta(seconds = 60 * 60 * 24)
-# #        }
-# #        token = "token"
-# #        
-# #        return jsonify({'result':'Success'})
-            
-# #    return jsonify({
-# #        'id' : id,
-# #        'pw' : pw,
-# #        'pw_hash' : pw_hash,
-# #        'result' : result
-# #    })
-# #    
-# #    
-# #    
     
         
     
@@ -169,8 +131,6 @@ def get_key():
 #            "result": 0,
 #            "msg": "권한이 없는 요청입니다."
 #        }, 401
-
-# # OCR API
 
 
 @app.route('/ocr', methods=['POST'])
