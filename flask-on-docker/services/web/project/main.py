@@ -56,9 +56,9 @@ def login():
     auth = request.form
     id = auth['id']
     pw = auth['pw']
-    user_auth = db.session.query.filter(User.name==id).first()
+    #user_auth = db.session.query.filter(User.name==id).first()
     
-    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
     # if id == "msg7883" and pw == "test1234!":
@@ -73,10 +73,10 @@ def login():
         # })
     # 
     #if user_auth and bcrypt.checkpw(pw, pw_hash):
-    if User.name == id and User.password == pw_hash:
-        user_id = user_auth['id']
+    if id == 'msg7883' and pw == 'test1234!':
+#        user_id = user_auth['id']
         payload = {
-            'id' : user_id,
+#            'id' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         token = jwt.encode(payload, token_secretkey, 'HS256')
