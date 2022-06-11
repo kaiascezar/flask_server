@@ -26,7 +26,7 @@ class User(db.Model):
         self.password = password
         
 def get_user_id_password(name):
-    row = db.session.query.filter_by(User.name==name).first()
+    row = User.query.filter_by(User.name==name).first()
     
     
     return{
