@@ -25,14 +25,20 @@ class User(db.Model):
         self.name = name
         self.password = password
         
-# def get_user_id_password(id):
-    # row = User.query.filter(User.name==id).first()
-    # 
-    # 
-    # return{
-        # 'id' : row['id'],
-        # 'pw' : row['password']
-    # } if row else None
+def get_user_id_password(id):
+    row = db.session.execute(text("""
+        SELECT
+        id,
+        password
+        FROM users
+        WHERE name = :name
+    """), {'name' : id}).fetchone()
+    
+    
+    return{
+        'id' : row['id'],
+        'pw' : row['password']
+    } if row else None
 
         
 
@@ -53,12 +59,12 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-#    auth = request.
-    id = request.json['id']
-    pw = request.json['pw']
-    #user_auth = db.session.query.filter(User.name==id).first()
+    auth = request.json
+    id = auth['id']
+    pw = auth['pw']
+    user_auth = get_user_id_password(id)
     
-    #pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
+    pw_hash = hashlib.sha256(pw.encode('utf-8')).hexdigest()
 
 
     # if id == "msg7883" and pw == "test1234!":
@@ -72,11 +78,11 @@ def login():
             # "msg": "계정 정보가 일치하지 않습니다."
         # })
     # 
-    #if user_auth and bcrypt.checkpw(pw, pw_hash):
-    if id == 'msg7883' and pw == 'test1234!':
-#        user_id = user_auth['id']
+    if user_auth and bcrypt.checkpw(pw, pw_hash):
+    #if id == 'msg7883' and pw == 'test1234!':
+        user_id = user_auth['id']
         payload = {
-#            'id' : user_id,
+            'id' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         token = jwt.encode(payload, token_secretkey, 'HS256')
