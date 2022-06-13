@@ -7,6 +7,7 @@ services:
       context: ./services/web
       dockerfile: Dockerfile.prod
     command: gunicorn --bind 0.0.0.0:5000 manage:app
+    command: gunicorn -w 2 0.0.0.0:5000 manage:app
     expose:
       - 5000
     env_file:
