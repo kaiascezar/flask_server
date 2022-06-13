@@ -85,6 +85,8 @@ def register():
     db.session.add(User(id=id, pw=pw_hash))
     db.session.commit()
     
+    return jsonify('Welcome' + id)
+    
     
 
 @app.route("/login", methods=['POST'])
