@@ -6,7 +6,7 @@ services:
     build:
       context: ./services/web
       dockerfile: Dockerfile.prod
-    command: gunicorn --worker 2 --bind 0.0.0.0:5000 manage:app
+    command: gunicorn --workers 2 --bind 0.0.0.0:5000 manage:app
     expose:
       - 5000
     env_file:
