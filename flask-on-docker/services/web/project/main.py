@@ -17,105 +17,104 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
 
-    id = db.Column(db.Integer, primary_key=True)
-    user = db.Column(db.String(32), unique=True, nullable=False)
-    password = db.Column(db.String(250), nullable=False)
+    index = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.String(32), unique=True, nullable=False)
+    pw = db.Column(db.String(250), nullable=False)
+#    decrypt = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, user, password):
-        self.user = user
-        self.password = password
+#     def __init__(self, id, pw):
+#         self.id = id
+#         self.pw = pw
+        
+# def insert_user(id):
+#     return db.session.execute(text("""
+#         INSERT INTO users(
+#             id,
+#             pw
+#         ) VALUES(
+#             :id,
+#             :pw
+#         )
+#         """), id).lastrowid 
+
+# def get_user(index):
+#     user = db.session.execute(text("""
+#         SELECT
+#             index,
+#             id,
+#             pw
+#         FROM users
+#         WHERE index = :index
+#         """), {
+#             'index' : index
+#         }).fetchone()
     
-    def __repr__(self):
-        return '%r' % self.user
-        # 
-# def insert_user(user):
-    # return db.session.execute(text("""
-        # INSERT INTO users(
-            # id,
-            # user,
-            # password
-        # ) VALUES(
-            # :id,
-            # :user,
-            # :password
-        # )
-        # """), user).lastrowid 
-# 
-# def get_user(user_id):
-    # user = db.session.execute(text("""
-        # SELECT
-            # id,
-            # user,
-            # password
-        # FROM users
-        # WHERE id = :user_id
-        # """), {
-            # 'user_id' : user_id
-        # }).fetchone()
-    # 
-    # return {
-        # 'id' : user['id'],
-        # 'user' : user['user']
-    # } if user else None
-# 
-    #    
-# def get_user_id_password(id):
-    # row = db.session.execute(text("""
-        # SELECT
-        # id,
-        # password
-        # FROM users
-        # WHERE user = :user
-    # """), {'user' : id}).fetchone()
-    # 
-    # 
-    # return{
-        # 'id' : row['id'],
-        # 'pw' : row['password']
-    # } if row else None
-# 
-        # 
-# 
-# @app.route('/register', methods=['POST'])
-# def register():
-    # new_user = request.json
-    # new_user['pw'] = bcrypt.hashpw(
-        # new_user['pw'].encode('UTF-8'),
-        # bcrypt.gensalt()
-    # )
-    # 
-    # new_user_id = insert_user(new_user)
-    # new_user = get_user(new_user_id)
-    # 
-    # return jsonify(new_user)
+#     return {
+#         'index' : user['index'],
+#         'id' : user['id']
+#     } if user else None
 
+       
+def get_user_id_password(id):
+    row = db.session.execute(text("""
+        SELECT
+        index,
+        pw
+        FROM users
+        WHERE id = :id
+    """), {'id' : id}).fetchone()
+    
+    
+    return{
+        'index' : row['index'],
+        'pw' : row['pw']
+    } if row else None
+
+        
+
+@app.route('/register', methods=['POST'])
+def register():
+    new_user = request.form.to_dict()
+    id = new_user['id']
+    pw = new_user['pw']
+    
+    pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
+                            bcrypt.gensalt()
+                            ).decode('utf-8')
+    
+    db.session.add(User(id=id, pw=pw_hash))
+    db.session.commit()
+    
+    return jsonify('Welcome' + ' ' + id)
+    
+    
 
 @app.route("/login", methods=['POST'])
 def login():
     auth = request.form
     id = auth['id']
     pw = auth['pw']
-#    user_auth = get_user_id_password(id)
+    user_auth = get_user_id_password(id)
     
-    
-#    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
-    if id == "msg7883" and pw == "test1234!":
-#        user_id = user_auth['id']
-#        payload = {
-#            'id' : user_id,
-            # 'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
-        # }
-        # token = jwt.encode(payload, token_secretkey, 'HS256')
-    # 
+         
+    if user_auth and bcrypt.checkpw(pw.encode('utf-8'), user_auth['pw'].encode('UTF-8')):
+        user_id = user_auth['index']
+        payload = {
+            'index' : user_id,
+            'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
+        }
+        token = jwt.encode(payload, token_secretkey, 'HS256')
+#    if id == "msg7883" and pw == "test1234!": #id pw 하드코딩
         return jsonify({
             "result": 1,
-            "access_token": "token"
+            "access_token": token
             })
     else:
         return jsonify({
             "result": 0,
             "msg": "계정 정보가 일치하지 않습니다."
         })
+
 
     
     
