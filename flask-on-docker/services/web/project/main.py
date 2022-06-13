@@ -91,13 +91,18 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    auth = request.form.to_dict()
+    auth = request.form
     id = auth['id']
     pw = auth['pw']
     
+    pwinfo_db = db.session.execute(text("""
+        SELECT
+        pw
+        from users
+        WHERE id = :id"""), {'id': id})
     
     user_auth = User.query.filter((User.id == id)).first()
-    password_check = bcrypt.checkpw(pw.encode('UTF-8'), User.pw.encode('UTF-8'))
+    password_check = bcrypt.checkpw(pw.encode('UTF-8'), pwinfo_db.encode('UTF-8'))
      
     if user_auth and password_check:
         user_id = user_auth['index']
