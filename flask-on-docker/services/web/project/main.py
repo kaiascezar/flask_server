@@ -20,7 +20,7 @@ class User(db.Model):
     index = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    decrypt = db.Colume(db.String(250), nullable=False)
+    decrypt = db.Column(db.String(250), nullable=False)
 
     def __init__(self, user, password):
         self.user = user
