@@ -99,7 +99,7 @@ def login():
         SELECT
         pw
         from users
-        WHERE id = :id"""), {'id': id})
+        WHERE id = :id"""), {'id': id}).fetchone()
     
     user_auth = User.query.filter((User.id == id)).first()
     password_check = bcrypt.checkpw(pw.encode('UTF-8'), pwinfo_db.encode('UTF-8'))
