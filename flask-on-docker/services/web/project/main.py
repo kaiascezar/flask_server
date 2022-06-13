@@ -55,20 +55,20 @@ class User(db.Model):
 #     } if user else None
 
        
-# def get_user_id_password(id):
-#     row = db.session.execute(text("""
-#         SELECT
-#         index,
-#         pw
-#         FROM id
-#         WHERE id = :id
-#     """), {'id' : id}).fetchone()
+def get_user_id_password(id):
+    row = db.session.execute(text("""
+        SELECT
+        index,
+        pw
+        FROM id
+        WHERE id = :id
+    """), {'id' : id}).fetchone()
     
     
-#     return{
-#         'index' : row['index'],
-#         'pw' : row['pw']
-#     } if row else None
+    return{
+        'index' : row['index'],
+        'pw' : row['pw']
+    } if row else None
 
         
 
@@ -94,18 +94,9 @@ def login():
     auth = request.form
     id = auth['id']
     pw = auth['pw']
-    
-    pwinfo_db = db.session.execute(text("""
-        SELECT
-        index,
-        pw
-        from users
-        WHERE id = :id"""), {'id': id}).fetchone()
-    
-    user_auth = User.query.filter((User.id == id)).first()
-    password_check = bcrypt.checkpw(pw.encode('UTF-8'), pwinfo_db.encode('UTF-8'))
-     
-    if user_auth and password_check:
+    user_auth = get_user_id_password(id)
+         
+    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'),user_auth['pw'].encode('UTF-8')):
         user_id = user_auth['index']
         payload = {
             'index' : user_id,
