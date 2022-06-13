@@ -91,7 +91,7 @@ def register():
 
 @app.route("/login", methods=['POST'])
 def login():
-    auth = request.form
+    auth = request.form.to_dict()
     id = auth['id']
     pw = auth['pw']
     
