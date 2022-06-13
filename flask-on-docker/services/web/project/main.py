@@ -74,7 +74,7 @@ def get_user_id_password(id):
 
 @app.route('/register', methods=['POST'])
 def register():
-    new_user = request.form.to_dict()
+    new_user = request.form()
     new_user['pw'] = bcrypt.hashpw(
         new_user['pw'].encode('UTF-8'),
         bcrypt.gensalt()
