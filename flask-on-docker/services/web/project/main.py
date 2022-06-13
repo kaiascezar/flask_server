@@ -83,7 +83,7 @@ def register():
     new_user_id = insert_user(new_user)
     new_user = get_user(new_user_id)
     
-    return [new_user] 
+    return jsonify(new_user) 
 
 
 @app.route("/login", methods=['POST'])
