@@ -29,26 +29,24 @@ class User(db.Model):
 def insert_user(user):
     return db.session.execute(text("""
         INSERT INTO users(
-            index,
             id,
             password
         ) VALUES(
-            :index,
             :id,
             :password
         )
         """), user).lastrowid 
 
-def get_user(id):
+def get_user(index):
     user = db.session.execute(text("""
         SELECT
             index,
             id,
             password
         FROM users
-        WHERE id = :id
+        WHERE index = :index
         """), {
-            'id' : id
+            'index' : index
         }).fetchone()
     
     return {
@@ -68,7 +66,7 @@ def get_user_id_password(id):
     
     
     return{
-        'id' : row['id'],
+        'index' : row['index'],
         'pw' : row['password']
     } if row else None
 
