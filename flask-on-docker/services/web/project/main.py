@@ -22,9 +22,9 @@ class User(db.Model):
     pw = db.Column(db.String(250), nullable=False)
 #    decrypt = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, user, password):
+    def __init__(self, user, pw):
         self.user = user
-        self.password = password
+        self.pw = pw
         
 def insert_user(user):
     return db.session.execute(text("""
