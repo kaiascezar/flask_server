@@ -22,11 +22,11 @@ class User(db.Model):
     pw = db.Column(db.String(250), nullable=False)
 #    decrypt = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, user, pw):
-        self.user = user
+    def __init__(self, id, pw):
+        self.user = id
         self.pw = pw
         
-def insert_user(user):
+def insert_user(id):
     return db.session.execute(text("""
         INSERT INTO users(
             id,
@@ -35,7 +35,7 @@ def insert_user(user):
             :id,
             :pw
         )
-        """), user).lastrowid 
+        """), id).lastrowid 
 
 def get_user(index):
     user = db.session.execute(text("""
@@ -83,7 +83,7 @@ def register():
     new_user_id = insert_user(new_user)
     new_user = get_user(new_user_id)
     
-    return jsonify(new_user) 
+    return [new_user] 
 
 
 @app.route("/login", methods=['POST'])
