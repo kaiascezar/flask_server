@@ -96,13 +96,8 @@ def login():
     pw = auth['pw']
     user_auth = get_user_id_password(id)
     
-    pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
-                            bcrypt.gensalt()
-                            )
-    
-    print(type(pw_hash))
          
-    if user_auth and bcrypt.checkpw(pw_hash, user_auth['pw']):
+    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw']):
         user_id = user_auth['index']
         payload = {
             'index' : user_id,
