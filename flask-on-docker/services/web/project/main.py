@@ -75,8 +75,8 @@ class User(db.Model):
 @app.route('/register', methods=['POST'])
 def register():
     new_user = request.form()
-    id = new_user('id')
-    pw = new_user('pw')
+    id = new_user['id']
+    pw = new_user['pw']
     
     pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
                             bcrypt.gensalt()
