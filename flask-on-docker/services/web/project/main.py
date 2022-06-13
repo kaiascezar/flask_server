@@ -20,7 +20,7 @@ class User(db.Model):
     index = db.Column(db.Integer, primary_key=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
-    decrypt = db.Column(db.String(250), nullable=False)
+#    decrypt = db.Column(db.String(250), nullable=False)
 
     def __init__(self, user, password):
         self.user = user
@@ -29,42 +29,42 @@ class User(db.Model):
 def insert_user(user):
     return db.session.execute(text("""
         INSERT INTO users(
+            index,
             id,
-            user,
             password
         ) VALUES(
+            :inex,
             :id,
-            :user,
             :password
         )
         """), user).lastrowid 
 
-def get_user(user_id):
+def get_user(id):
     user = db.session.execute(text("""
         SELECT
+            index,
             id,
-            user,
             password
         FROM users
-        WHERE id = :user_id
+        WHERE id = :id
         """), {
-            'user_id' : user_id
+            'id' : id
         }).fetchone()
     
     return {
-        'id' : user['id'],
-        'user' : user['user']
+        'index' : user['index'],
+        'id' : user['id']
     } if user else None
 
        
 def get_user_id_password(id):
     row = db.session.execute(text("""
         SELECT
-        id,
+        index,
         password
-        FROM users
-        WHERE user = :user
-    """), {'user' : id}).fetchone()
+        FROM id
+        WHERE id = :id
+    """), {'id' : id}).fetchone()
     
     
     return{
