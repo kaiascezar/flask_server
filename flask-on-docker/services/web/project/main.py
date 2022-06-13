@@ -6,7 +6,7 @@ from project.detectionwork import GtnOcr, PreProcessing
 import bcrypt
 import jwt
 import hashlib
-
+# import secrets            # TO-DO: 도커 설치 모듈 이름 확인
 
 app = Flask(__name__)
 token_secretkey = 'SECRET_KEY'
@@ -20,41 +20,13 @@ class User(db.Model):
     index = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     pw = db.Column(db.String(250), nullable=False)
-#    decrypt = db.Column(db.String(250), nullable=False)
+    # token = db.Column(db.String(250), nullable=True)
+    # key = db.Column(db.String(250), nullable=True)
+    # iv = db.Column(db.String(250), nullable=True)
 
-#     def __init__(self, id, pw):
-#         self.id = id
-#         self.pw = pw
-        
-# def insert_user(id):
-#     return db.session.execute(text("""
-#         INSERT INTO users(
-#             id,
-#             pw
-#         ) VALUES(
-#             :id,
-#             :pw
-#         )
-#         """), id).lastrowid 
 
-# def get_user(index):
-#     user = db.session.execute(text("""
-#         SELECT
-#             index,
-#             id,
-#             pw
-#         FROM users
-#         WHERE index = :index
-#         """), {
-#             'index' : index
-#         }).fetchone()
-    
-#     return {
-#         'index' : user['index'],
-#         'id' : user['id']
-#     } if user else None
 
-       
+# DB에서 id/pw 추출하는 메서드       
 def get_user_id_password(id):
     row = db.session.execute(text("""
         SELECT
@@ -70,6 +42,9 @@ def get_user_id_password(id):
         'pw' : row['pw']
     } if row else None
 
+# DB에 토큰/키/iv값 저장하는 메서드
+def key_iv():
+    pass
         
 
 @app.route('/register', methods=['POST'])
@@ -96,18 +71,22 @@ def login():
     pw = auth['pw']
     user_auth = get_user_id_password(id)
     
-         
+    # 계정 정보(id, pw)를 DB와 비교
     if user_auth and bcrypt.checkpw(pw.encode('utf-8'), user_auth['pw'].encode('UTF-8')):
         user_id = user_auth['index']
         payload = {
             'index' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
+        # TO-DO : 이하 3개를 DB에 암호화 하여 저장
         token = jwt.encode(payload, token_secretkey, 'HS256')
-#    if id == "msg7883" and pw == "test1234!": #id pw 하드코딩
+        # onekey = secrets.token_hex(8)
+        # iv = secrets.token_hex(8)
         return jsonify({
             "result": 1,
             "access_token": token
+            # "key": onekey,
+            # "iv": iv
             })
     else:
         return jsonify({
@@ -115,19 +94,20 @@ def login():
             "msg": "계정 정보가 일치하지 않습니다."
         })
 
-
-    
     
 @app.route('/decryption', methods=['POST', 'GET'])
 def get_key():
     pass
-    auth_token = request.form()
+    auth_token = request.form
     # 인증 성공 - 토큰 일치
+    # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
     if auth_token['access_token'] == "token":
+        # 'decry_key = DB에서 불러온 key'
+        # 'iv = DB에서 불러온 iv'
         return jsonify({
             "result": 1,
-            "decry_key": 'kkkkkkkkkkkkkkkk',
-            "iv" : "iviviviviviviviv"
+            "decry_key": 'kkkkkkkkkkkkkkkk',# decry_key,
+            "iv" : "iviviviviviviviv"# iv
         })
     # 인증 실패 - 토큰 불일치
     else:
@@ -156,11 +136,10 @@ def ocr():
             verif_idcard = list(0 for i in range(0, 5))
             verif_license = list(0 for i in range(0, 5))
             verif_regist = list(0 for i in range(0, 9))
-            jumin_cnt = 0
-            license_cnt = 0
+            priv_cnt = 0
 
             parsed = GtnOcr.reader.readtext(file.read())
-            contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, jumin_cnt, license_cnt))
+            contents = list(GtnOcr.get_coordinate(parsed, tag, coordinate, verif_idcard, verif_license, verif_regist, priv_cnt))
             # 개인정보 탐지 내용이 없을 경우
             if contents[1] == []:
                 return jsonify({
