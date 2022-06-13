@@ -99,6 +99,8 @@ def login():
     pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
                             bcrypt.gensalt()
                             )
+    
+    print(type(pw_hash))
          
     if user_auth and bcrypt.checkpw(pw_hash, user_auth['pw']):
         user_id = user_auth['index']
