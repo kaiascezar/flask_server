@@ -33,7 +33,7 @@ def insert_user(user):
             id,
             password
         ) VALUES(
-            :inex,
+            :index,
             :id,
             :password
         )
