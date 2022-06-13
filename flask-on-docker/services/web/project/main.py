@@ -22,81 +22,85 @@ class User(db.Model):
     pw = db.Column(db.String(250), nullable=False)
 #    decrypt = db.Column(db.String(250), nullable=False)
 
-    def __init__(self, id, pw):
-        self.id = id
-        self.pw = pw
+#     def __init__(self, id, pw):
+#         self.id = id
+#         self.pw = pw
         
-def insert_user(id):
-    return db.session.execute(text("""
-        INSERT INTO users(
-            id,
-            pw
-        ) VALUES(
-            :id,
-            :pw
-        )
-        """), id).lastrowid 
+# def insert_user(id):
+#     return db.session.execute(text("""
+#         INSERT INTO users(
+#             id,
+#             pw
+#         ) VALUES(
+#             :id,
+#             :pw
+#         )
+#         """), id).lastrowid 
 
-def get_user(index):
-    user = db.session.execute(text("""
-        SELECT
-            index,
-            id,
-            pw
-        FROM users
-        WHERE index = :index
-        """), {
-            'index' : index
-        }).fetchone()
+# def get_user(index):
+#     user = db.session.execute(text("""
+#         SELECT
+#             index,
+#             id,
+#             pw
+#         FROM users
+#         WHERE index = :index
+#         """), {
+#             'index' : index
+#         }).fetchone()
     
-    return {
-        'index' : user['index'],
-        'id' : user['id']
-    } if user else None
+#     return {
+#         'index' : user['index'],
+#         'id' : user['id']
+#     } if user else None
 
        
-def get_user_id_password(id):
-    row = db.session.execute(text("""
-        SELECT
-        index,
-        pw
-        FROM id
-        WHERE id = :id
-    """), {'id' : id}).fetchone()
+# def get_user_id_password(id):
+#     row = db.session.execute(text("""
+#         SELECT
+#         index,
+#         pw
+#         FROM id
+#         WHERE id = :id
+#     """), {'id' : id}).fetchone()
     
     
-    return{
-        'index' : row['index'],
-        'pw' : row['pw']
-    } if row else None
+#     return{
+#         'index' : row['index'],
+#         'pw' : row['pw']
+#     } if row else None
 
         
 
 @app.route('/register', methods=['POST'])
 def register():
-    new_user = request.json()
-    new_user['pw'] = bcrypt.hashpw(
-        new_user['pw'].encode('UTF-8'),
-        bcrypt.gensalt()
-    )
+    new_user = request.form()
+    id = new_user('id')
+    pw = new_user('pw')
     
-    new_user_id = insert_user(new_user)
-    new_user = get_user(new_user_id)
+    pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
+                            bcrypt.gensalt()
+                            )
     
-    return jsonify(new_user) 
-
+    db.session.add(User(id=id, pw=pw_hash))
+    db.session.commit()
+    
+    
 
 @app.route("/login", methods=['POST'])
 def login():
     auth = request.form
     id = auth['id']
     pw = auth['pw']
-    user_auth = get_user_id_password(id)
-    # 
-    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), user_auth['pw'].encode('UTF-8')):
-        user_id = user_auth['id']
+    
+    
+    user_auth = User.query.filter((User.id == id)).first()
+    password_check = bcrypt.checkpw(pw.encode('UTF-8'), User.pw.encode('UTF-8'))
+     
+    if user_auth and password_check:
+        user_id = user_auth['index']
         payload = {
-            'id' : user_id,
+            'index' : user_id,
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         token = jwt.encode(payload, token_secretkey, 'HS256')
