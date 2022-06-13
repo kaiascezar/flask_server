@@ -97,6 +97,7 @@ def login():
     
     pwinfo_db = db.session.execute(text("""
         SELECT
+        index,
         pw
         from users
         WHERE id = :id"""), {'id': id}).fetchone()
