@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
     __tablename__ = "users"
 
-    index = db.Column(db.Integer, primary_key=True)
+    index = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     password = db.Column(db.String(250), nullable=False)
 #    decrypt = db.Column(db.String(250), nullable=False)
