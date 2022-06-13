@@ -60,7 +60,7 @@ def get_user_id_password(id):
         SELECT
         index,
         pw
-        FROM id
+        FROM users
         WHERE id = :id
     """), {'id' : id}).fetchone()
     
