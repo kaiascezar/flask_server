@@ -74,7 +74,7 @@ class User(db.Model):
 
 @app.route('/register', methods=['POST'])
 def register():
-    new_user = request.form()
+    new_user = request.form.to_dict()
     id = new_user['id']
     pw = new_user['pw']
     
