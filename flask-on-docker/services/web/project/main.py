@@ -85,7 +85,7 @@ def register():
     db.session.add(User(id=id, pw=pw_hash))
     db.session.commit()
     
-    return jsonify('Welcome' + id)
+    return jsonify('Welcome' + ' ' + id)
     
     
 
@@ -95,8 +95,10 @@ def login():
     id = auth['id']
     pw = auth['pw']
     user_auth = get_user_id_password(id)
+    
+    pwhash_decode = user_auth['pw'].decode
          
-    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'),user_auth['pw'].encode('UTF-8')):
+    if user_auth and bcrypt.checkpw(pw.encode('UTF-8'), pwhash_decode.encode('UTF-8')):
         user_id = user_auth['index']
         payload = {
             'index' : user_id,
