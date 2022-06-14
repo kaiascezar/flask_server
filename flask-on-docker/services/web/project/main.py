@@ -79,7 +79,7 @@ def login():
             'exp' : datetime.utcnow() + timedelta(seconds = 60 * 60 * 24)
         }
         # TO-DO : 이하 3개를 DB에 암호화 하여 저장
-        token = jwt.encode(payload, token_secretkey, 'HS256')
+        token = jwt.encode(payload, token_secretkey, 'HS256').decode('UTF-8')
         # onekey = secrets.token_hex(8)
         # iv = secrets.token_hex(8)
         return jsonify({
