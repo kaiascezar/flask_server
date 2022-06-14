@@ -128,7 +128,7 @@ def login():
         # iv = secrets.token_hex(8)
         return jsonify({
             "result": 1,
-            "access_token": token.decode(payload, token_secretkey, 'HS256')
+            "access_token": token.decode(token, token_secretkey, 'HS256')
             # "key": onekey,
             # "iv": iv
             })
