@@ -21,8 +21,8 @@ class User(db.Model):
     index = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     pw = db.Column(db.String(250), nullable=False)
-    key = db.Column(db.String(250), nullable=True)
-    iv = db.Column(db.String(250), nullable=True)
+    # key = db.Column(db.String(250), nullable=True)
+    # iv = db.Column(db.String(250), nullable=True)
 
 
 def get_user(user_id):
