@@ -155,9 +155,8 @@ def login():
 
     
 @app.route('/decryption', methods=['POST', 'GET'])
-@login_required
+#@login_required
 def get_key():
-    pass
     auth_token = request.form
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
