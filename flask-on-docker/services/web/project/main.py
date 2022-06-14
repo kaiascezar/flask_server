@@ -21,8 +21,8 @@ class User(db.Model):
     index = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id = db.Column(db.String(32), unique=True, nullable=False)
     pw = db.Column(db.String(250), nullable=False)
-    key = db.Column(db.String(250), nullable=True)
-    iv = db.Column(db.String(250), nullable=True)
+    # key = db.Column(db.String(250), nullable=True)
+    # iv = db.Column(db.String(250), nullable=True)
 
 
 def get_user(user_id):
@@ -107,16 +107,15 @@ def register():
     new_user = request.form.to_dict()
     id = new_user['id']
     pw = new_user['pw']
-    key = secrets.token_hex(8)
-    iv = secrets.token_hex(8)
+    # key = secrets.token_hex(8)
+    # iv = secrets.token_hex(8)
 
-    
-    
     pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
                             bcrypt.gensalt()
                             ).decode('utf-8')
     
-    db.session.add(User(id = id, pw = pw_hash, key = key, iv = iv))
+    # db.session.add(User(id = id, pw = pw_hash, key = key, iv = iv))
+    db.session.add(User(id = id, pw = pw_hash))
     db.session.commit()
     
     return jsonify('Welcome' + ' ' + id)
@@ -140,13 +139,13 @@ def login():
         # TO-DO : 이하 3개를 DB에 암호화 하여 저장
         token = jwt.encode(payload, token_secretkey, 'HS256')
         
-        key = get_key_iv(id)
+        # key = get_key_iv(id)
 
         return jsonify({
             "result": 1,
             "access_token": token,
-            "key" : key['key'],
-            "iv" : key['iv']
+            # "key" : key['key'],
+            # "iv" : key['iv']
             })
     else:
         return jsonify({
@@ -156,9 +155,8 @@ def login():
 
     
 @app.route('/decryption', methods=['POST', 'GET'])
-@login_required
+#@login_required
 def get_key():
-    pass
     auth_token = request.form
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
@@ -172,10 +170,10 @@ def get_key():
         })
     # 인증 실패 - 토큰 불일치
     else:
-        return {
+        return jsonify({
             "result": 0,
             "msg": "권한이 없는 요청입니다."
-        }, 401
+        }), 401
 
 
 @app.route('/ocr', methods=['POST'])
