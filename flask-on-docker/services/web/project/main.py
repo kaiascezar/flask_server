@@ -65,6 +65,19 @@ def get_user_id_password(id):
 def key_iv():
     pass
         
+def get_key_iv(id):
+    row = db.session.execute(text("""
+        SELECT
+        key,
+        iv
+        FROM users
+        WHERE id = :id
+    """), {'id' : id}).fetchone()
+
+    return{
+        'key' : row['key'],
+        'iv' : row['iv']
+    } if row else None
 
 def login_required(f):
     @wraps(f)
@@ -127,10 +140,13 @@ def login():
         # TO-DO : 이하 3개를 DB에 암호화 하여 저장
         token = jwt.encode(payload, token_secretkey, 'HS256')
         
+        key = get_key_iv(id)
+
         return jsonify({
             "result": 1,
-            "access_token": token
-            
+            "access_token": token,
+            "key" : key['key'],
+            "iv" : key['iv']
             })
     else:
         return jsonify({
