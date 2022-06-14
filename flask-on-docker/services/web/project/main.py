@@ -107,16 +107,15 @@ def register():
     new_user = request.form.to_dict()
     id = new_user['id']
     pw = new_user['pw']
-    key = secrets.token_hex(8)
-    iv = secrets.token_hex(8)
+    # key = secrets.token_hex(8)
+    # iv = secrets.token_hex(8)
 
-    
-    
     pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
                             bcrypt.gensalt()
                             ).decode('utf-8')
     
-    db.session.add(User(id = id, pw = pw_hash, key = key, iv = iv))
+    # db.session.add(User(id = id, pw = pw_hash, key = key, iv = iv))
+    db.session.add(User(id = id, pw = pw_hash))
     db.session.commit()
     
     return jsonify('Welcome' + ' ' + id)
@@ -140,13 +139,13 @@ def login():
         # TO-DO : 이하 3개를 DB에 암호화 하여 저장
         token = jwt.encode(payload, token_secretkey, 'HS256')
         
-        key = get_key_iv(id)
+        # key = get_key_iv(id)
 
         return jsonify({
             "result": 1,
             "access_token": token,
-            "key" : key['key'],
-            "iv" : key['iv']
+            # "key" : key['key'],
+            # "iv" : key['iv']
             })
     else:
         return jsonify({
@@ -172,10 +171,10 @@ def get_key():
         })
     # 인증 실패 - 토큰 불일치
     else:
-        return {
+        return jsonify({
             "result": 0,
             "msg": "권한이 없는 요청입니다."
-        }, 401
+        }), 401
 
 
 @app.route('/ocr', methods=['POST'])
