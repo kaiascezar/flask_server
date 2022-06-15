@@ -143,7 +143,7 @@ def login():
 
         return jsonify({
             "result": 1,
-            "access_token": token,
+            "access_token": token
             # "key" : key['key'],
             # "iv" : key['iv']
             })
