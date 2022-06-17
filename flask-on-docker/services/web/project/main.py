@@ -155,8 +155,6 @@ def get_key():
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
     token = jwt.decode(auth_token['access_token'],token_secretkey, 'HS256')
-    print(auth_token)
-    print(token)
     
     
     if token['index'] == get_user(token['index']):
@@ -171,7 +169,9 @@ def get_key():
     else:
         return jsonify({
             "result": 0,
-            "msg": "권한이 없는 요청입니다."
+            "msg": "권한이 없는 요청입니다.",
+            "token": token,
+            "auth_token": auth_token
         }), 401
 
 
