@@ -157,7 +157,7 @@ def get_key():
     token = jwt.decode(auth_token['access_token'],token_secretkey, 'HS256')
     
     
-    if token['index'] == get_user(int(token['index'])):
+    if token['index'] == int(get_user(token['index'])):
         # key = secrets.token_hex(8)            # 암/복호화 키
         # iv = secrets.token_hex(8)             # 초기화 벡터
         return jsonify({
