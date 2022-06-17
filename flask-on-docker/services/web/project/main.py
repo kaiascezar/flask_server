@@ -155,9 +155,9 @@ def get_key():
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
     token = jwt.decode(auth_token['access_token'],token_secretkey, 'HS256')
+    compare = get_user(token['index'])['index']
     
-    
-    if token['index'] == int(get_user(token['index'])):
+    if token['index'] == compare:
         # key = secrets.token_hex(8)            # 암/복호화 키
         # iv = secrets.token_hex(8)             # 초기화 벡터
         return jsonify({
