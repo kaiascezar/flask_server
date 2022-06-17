@@ -30,7 +30,7 @@ def get_user(user_id):
         SELECT
         index,
         id,
-        password
+        pw
         FROM users
         WHERE index = :user_id
     """), {
