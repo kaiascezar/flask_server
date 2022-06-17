@@ -30,17 +30,15 @@ def get_user(user_id):
         SELECT
         index,
         id,
-        password
+        pw
         FROM users
-        WHERE id = :user_id
+        WHERE index = :user_id
     """), {
         'user_id' : user_id
     }).fetchone()
 
     return {
-        'index' : user['index'],
-        'id' : user['id'],
-        'pw' : user['pw']
+        'index' : user['index']
     } if user else None
 
 
@@ -77,26 +75,26 @@ def get_key_iv(id):
         'iv' : row['iv']
     } if row else None
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        access_token = request.headers.get('Authorization')
-        if access_token is not None:
-            try:
-                payload = jwt.decode(access_token, token_secretkey, 'HS256')
-            except jwt.InvalidTokenError:
-                payload = None
-
-            if payload is None: return Response(status=401)
-
-            user_id = payload['user_id']
-            g.user_id = user_id
-            g.user = get_user(user_id) if user_id else None
-        else:
-            return Response(status = 401)
-
-        return f(*args, **kwargs)
-    return decorated_function
+# def login_required(f):
+    # @wraps(f)
+    # def decorated_function(*args, **kwargs):
+        # access_token = request.headers.get('Authorization')
+        # if access_token is not None:
+            # try:
+                # payload = jwt.decode(access_token, token_secretkey, 'HS256')
+            # except jwt.InvalidTokenError:
+                # payload = None
+# 
+            # if payload is None: return Response(status=401)
+# 
+            # user_id = payload['user_id']
+            # g.user_id = user_id
+            # g.user = get_user(user_id) if user_id else None
+        # else:
+            # return Response(status = 401)
+# 
+        # return f(*args, **kwargs)
+    # return decorated_function
 
 
 
@@ -156,7 +154,10 @@ def get_key():
     auth_token = request.form
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
-    if auth_token['access_token'] == "token":
+    token = jwt.decode(auth_token['access_token'],token_secretkey, 'HS256')
+    compare = get_user(token['index'])['index']
+    
+    if token['index'] == compare:
         # key = secrets.token_hex(8)            # 암/복호화 키
         # iv = secrets.token_hex(8)             # 초기화 벡터
         return jsonify({
@@ -168,7 +169,10 @@ def get_key():
     else:
         return jsonify({
             "result": 0,
-            "msg": "권한이 없는 요청입니다."
+            "msg": "권한이 없는 요청입니다.",
+            "token": token['index'],
+            "get_user": get_user((token['index'])['index'])
+#            "token_type": type(token['index'])
         }), 401
 
 
