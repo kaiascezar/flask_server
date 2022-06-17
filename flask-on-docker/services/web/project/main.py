@@ -171,7 +171,7 @@ def get_key():
             "result": 0,
             "msg": "권한이 없는 요청입니다.",
             "token": token['index'],
-            "get_user": get_user(token['index'])
+            "get_user": get_user((token['index'])['index'])
 #            "token_type": type(token['index'])
         }), 401
 
