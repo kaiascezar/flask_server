@@ -7,14 +7,14 @@ import bcrypt
 import jwt
 import hashlib
 from functools import wraps
-import secrets            # TO-DO: 도커 설치 모듈 이름 확인
+import secrets
 
 app = Flask(__name__)
 token_secretkey = 'SECRET_KEY'
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
-
+# DB Data
 class User(db.Model):
     __tablename__ = "users"
 
@@ -61,10 +61,8 @@ def get_user_id_password(id):
         'pw' : row['pw']
     } if row else None
 
-# DB에 토큰/키/iv값 저장하는 메서드
-def key_iv():
-    pass
-        
+
+# key값 호출하는 메서드
 def get_key_iv(id):
     row = db.session.execute(text("""
         SELECT
@@ -107,8 +105,6 @@ def register():
     new_user = request.form.to_dict()
     id = new_user['id']
     pw = new_user['pw']
-    # key = secrets.token_hex(8)
-    # iv = secrets.token_hex(8)
 
     pw_hash = bcrypt.hashpw(pw.encode('UTF-8'),
                             bcrypt.gensalt()
@@ -161,12 +157,12 @@ def get_key():
     # 인증 성공 - 토큰 일치
     # TO-DO: if auth_token['access_token'] == 'DB에서 불러온 token'
     if auth_token['access_token'] == "token":
-        # 'decry_key = DB에서 불러온 key'
-        # 'iv = DB에서 불러온 iv'
+        # key = secrets.token_hex(8)            # 암/복호화 키
+        # iv = secrets.token_hex(8)             # 초기화 벡터
         return jsonify({
             "result": 1,
-            "decry_key": 'kkkkkkkkkkkkkkkk',# decry_key,
-            "iv" : "iviviviviviviviv"# iv
+            "key": "ABCDEFGH12345678",
+            "iv" : "1234567812345678"
         })
     # 인증 실패 - 토큰 불일치
     else:
