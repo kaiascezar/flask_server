@@ -170,8 +170,8 @@ def get_key():
         return jsonify({
             "result": 0,
             "msg": "권한이 없는 요청입니다.",
-            "token": token['index'],
-            "token_type": type(token['index'])
+            "token": token['index']
+#            "token_type": type(token['index'])
         }), 401
 
 
